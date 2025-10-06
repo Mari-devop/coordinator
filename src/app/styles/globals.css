@@ -1,12 +1,39 @@
 @import "tailwindcss";
 
 :root {
+  /* Light Theme Colors */
   --background: #F9FBFD;
   --secondaryBackground: #457B9D;
   --accentColor: #C06C0D;
   --lightAccentColor: #eaac66;
   --accentColor2: #D93643;
   --fontColor: #222324;
+  
+  /* Additional Light Theme Colors */
+  --cardBackground: #FFFFFF;
+  --borderColor: #E5E7EB;
+  --textSecondary: #6B7280;
+  --textMuted: #9CA3AF;
+  --hoverBackground: #F3F4F6;
+  --shadowColor: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+  /* Dark Theme Colors - Based on your light theme */
+  --background: #0F1419;
+  --secondaryBackground: #2D4A5D;
+  --accentColor: #E67E22;
+  --lightAccentColor: #F39C12;
+  --accentColor2: #E74C3C;
+  --fontColor: #E5E7EB;
+  
+  /* Additional Dark Theme Colors */
+  --cardBackground: #1A1F24;
+  --borderColor: #374151;
+  --textSecondary: #9CA3AF;
+  --textMuted: #6B7280;
+  --hoverBackground: #2D3748;
+  --shadowColor: rgba(0, 0, 0, 0.3);
 }
 
 @theme inline {
@@ -16,17 +43,12 @@
   --color-lightAccentColor: var(--lightAccentColor);
   --color-accentColor2: var(--accentColor2);
   --color-fontColor: var(--fontColor);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--background);
-    --color-secondaryBackground: var(--secondaryBackground);
-    --color-accentColor: var(--accentColor);
-    --color-lightAccentColor: var(--lightAccentColor);
-    --color-accentColor2: var(--accentColor2);
-    --color-fontColor: var(--fontColor);
-  }
+  --color-cardBackground: var(--cardBackground);
+  --color-borderColor: var(--borderColor);
+  --color-textSecondary: var(--textSecondary);
+  --color-textMuted: var(--textMuted);
+  --color-hoverBackground: var(--hoverBackground);
+  --color-shadowColor: var(--shadowColor);
 }
 
 body {

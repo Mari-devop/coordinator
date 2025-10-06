@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {Wix_Madefor_Display, DM_Sans} from "next/font/google";
 
 import "./styles/globals.css";
+import { Providers } from "./providers";
 
 const wixMadeforDisplay = Wix_Madefor_Display({
   variable: "--font-wix-madefor-display",
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body
         className={`${wixMadeforDisplay.variable} ${dmSans.variable} antialiased`}
       >
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
