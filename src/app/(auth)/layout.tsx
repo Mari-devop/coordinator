@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { authLayoutStyles } from "./styles/layoutStyles";
 
 export default function AuthLayout({
   children,
@@ -8,6 +9,8 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { layout, animation } = authLayoutStyles;
+  
   const isAuthPage =
     pathname === "/login" ||
     pathname === "/register" ||
@@ -15,26 +18,28 @@ export default function AuthLayout({
     pathname === "/privacy-policy" ||
     pathname === "/terms-and-condition";
 
-  const isFormPage = pathname === "/login" || pathname === "/register" || pathname === "/forgot-password";
   const isContentPage = pathname === "/privacy-policy" || pathname === "/terms-and-condition";
   
-  const containerWidth = isContentPage ? "max-w-4xl" : "max-w-md";
+  const containerWidth = isContentPage ? layout.containerWidth.content : layout.containerWidth.form;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--background)]">
+    <div className={layout.container}>
       <header>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-            <Link href="/login" className="text-2xl font-bold text-[var(--secondaryBackground)] font-[var(--font-wix-madefor-display)] uppercase border border-[var(--secondaryBackground)] rounded-md px-2 py-1">
+        <div className={layout.header.container}>
+          <div className={layout.header.content}>
+            <div className={layout.header.logoContainer}>
+              <Link 
+                href="/login" 
+                className={`${layout.logo.container} ${animation.hover.logo} ${animation.focus.logo}`}
+              >
                 Coordinator
               </Link>
             </div>
-            <nav className="flex items-center">
+            <nav className={layout.header.navContainer}>
               {!isAuthPage && (
                 <a
                   href="/logout"
-                  className="text-[var(--accentColor)] hover:text-[var(--lightAccentColor)] transition-colors duration-200 font-medium"
+                  className={`${layout.navigation.logoutLink} ${animation.focus.logout}`}
                 >
                   Log out
                 </a>
@@ -43,8 +48,10 @@ export default function AuthLayout({
           </div>
         </div>
       </header>
-      <main className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className={`w-full ${containerWidth}`}>{children}</div>
+      <main className={layout.main.container}>
+        <div className={`${layout.main.content} ${containerWidth}`}>
+          {children}
+        </div>
       </main>
     </div>
   );

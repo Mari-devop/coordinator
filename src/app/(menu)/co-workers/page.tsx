@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import CoWorkersHeader from "../components/CoWorkersHeader";
-import CoWorkerSearch from "../components/CoWorkerSearch";
-import CoWorkerCard from "../components/CoWorkerCard";
-import CoWorkerDetailView from "../components/CoWorkerDetailView";
-import InviteSection from "../components/InviteSection";
+import CoWorkersHeader from "../components/coWorker/CoWorkersHeader";
+import CoWorkerSearch from "../components/coWorker/CoWorkerSearch";
+import CoWorkerCard from "../components/coWorker/CoWorkerCard";
+import CoWorkerDetailView from "../components/coWorker/CoWorkerDetailView";
+import InviteSection from "../components/coWorker/InviteSection";
 import { CoWorker } from "@/app/types/profile";
 
 export default function CoWorkersPage() {
