@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import SettingsHeader from "../components/settings/SettingsHeader";
-import GeneralSettingsSection from "../components/settings/GeneralSettingsSection";
-import GoogleAdsSection from "../components/profile/GoogleAdsSection";
-import SaveButton from "../components/profile/SaveButton";
+import SettingsHeader from "../_components/settings/SettingsHeader";
+import GeneralSettingsSection from "../_components/settings/GeneralSettingsSection";
+import GoogleAdsSection from "../_components/profile/GoogleAdsSection";
+import SaveButton from "../_components/profile/SaveButton";
 
 export default function SettingsPage() {
     const [language, setLanguage] = useState("en");

@@ -1,9 +1,9 @@
-import AuthContainer from "../components/AuthContainer";
-import AuthHeader from "../components/AuthHeader";
-import AuthForm from "../components/AuthForm";
-import AuthInput from "../components/AuthInput";
-import AuthButton from "../components/AuthButton";
-import AuthFooter from "../components/AuthFooter";
+import AuthContainer from "../_components/AuthContainer";
+import AuthHeader from "../_components/AuthHeader";
+import AuthForm from "../_components/AuthForm";
+import AuthInput from "../_components/AuthInput";
+import AuthButton from "../_components/AuthButton";
+import AuthFooter from "../_components/AuthFooter";
 
 export default function ForgotPasswordPage() {
   return (

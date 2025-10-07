@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { authLayoutStyles } from "./styles/layoutStyles";
+import { authLayoutStyles } from "./_styles/layoutStyles";
 
 export default function AuthLayout({
   children,

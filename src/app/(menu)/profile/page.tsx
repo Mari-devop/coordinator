@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import ProfileHeader from "../components/profile/ProfileHeader";
-import ProfileSummary from "../components/profile/ProfileSummary";
-import PasswordChangeSection from "../components/profile/PasswordChangeSection";
+import ProfileHeader from "../_components/profile/ProfileHeader";
+import ProfileSummary from "../_components/profile/ProfileSummary";
+import PasswordChangeSection from "../_components/profile/PasswordChangeSection";
 
 export default function ProfilePage() {
     const [isLoading, setIsLoading] = useState(false);

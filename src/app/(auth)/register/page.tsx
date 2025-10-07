@@ -1,10 +1,10 @@
-import AuthContainer from "../components/AuthContainer";
-import AuthHeader from "../components/AuthHeader";
-import AuthForm from "../components/AuthForm";
-import AuthInput from "../components/AuthInput";
-import AuthButton from "../components/AuthButton";
-import AuthFooter from "../components/AuthFooter";
-import TermsCheckbox from "../components/TermsCheckbox";
+import AuthContainer from "../_components/AuthContainer";
+import AuthHeader from "../_components/AuthHeader";
+import AuthForm from "../_components/AuthForm";
+import AuthInput from "../_components/AuthInput";
+import AuthButton from "../_components/AuthButton";
+import AuthFooter from "../_components/AuthFooter";
+import TermsCheckbox from "../_components/TermsCheckbox";
 
 export default function RegisterPage() {
     return (
