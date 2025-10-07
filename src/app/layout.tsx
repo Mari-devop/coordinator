@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import {Wix_Madefor_Display, DM_Sans} from "next/font/google";
 
-import "./styles/globals.css";
+import "./_styles/globals.css";
 import { Providers } from "./providers";
 
 const wixMadeforDisplay = Wix_Madefor_Display({
