@@ -1,5 +1,5 @@
 "use client";
-import { formStyles } from "../_styles/authStyles";
+import { formStyles } from "../../_styles/authStyles";
 
 interface AuthFormProps {
     children: React.ReactNode;

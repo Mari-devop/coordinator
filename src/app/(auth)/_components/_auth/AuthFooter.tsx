@@ -1,6 +1,6 @@
 "use client";
-import { titleStyles } from "../_styles/authStyles";
-import AuthLink from "./AuthLink";
+import { titleStyles } from "../../_styles/authStyles";
+import AuthLink from "../../_components/_auth/AuthLink";
 
 interface AuthFooterProps {
     text: string;

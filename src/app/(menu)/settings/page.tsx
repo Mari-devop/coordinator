@@ -5,6 +5,8 @@ import GeneralSettingsSection from "../_components/settings/GeneralSettingsSecti
 import GoogleAdsSection from "../_components/profile/GoogleAdsSection";
 import SaveButton from "../_components/profile/SaveButton";
 
+//TODO: #4 Add the language selector here
+
 export default function SettingsPage() {
     const [language, setLanguage] = useState("en");
     const [emailNotifications, setEmailNotifications] = useState(true);

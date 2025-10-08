@@ -1,5 +1,5 @@
 "use client";
-import { containerStyles } from "../_styles/authStyles";
+import { containerStyles } from "../../_styles/authStyles";
 
 interface AuthContainerProps {
     children: React.ReactNode;

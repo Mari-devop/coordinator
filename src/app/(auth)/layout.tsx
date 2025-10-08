@@ -19,8 +19,13 @@ export default function AuthLayout({
     pathname === "/terms-and-condition";
 
   const isContentPage = pathname === "/privacy-policy" || pathname === "/terms-and-condition";
+  const isOnboardingPage = pathname === "/onboarding";
   
-  const containerWidth = isContentPage ? layout.containerWidth.content : layout.containerWidth.form;
+  const containerWidth = isOnboardingPage 
+    ? "" 
+    : isContentPage 
+    ? layout.containerWidth.content 
+    : layout.containerWidth.form;
 
   return (
     <div className={layout.container}>
@@ -49,7 +54,7 @@ export default function AuthLayout({
         </div>
       </header>
       <main className={layout.main.container}>
-        <div className={`${layout.main.content} ${containerWidth}`}>
+        <div className={`${layout.main.content} ${containerWidth} ${isOnboardingPage ? 'p-6' : ''}`}>
           {children}
         </div>
       </main>
