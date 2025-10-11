@@ -5,12 +5,22 @@ import AuthInput from "../_components/_auth/AuthInput";
 import AuthButton from "../_components/_auth/AuthButton";
 import AuthFooter from "../_components/_auth/AuthFooter";
 
-export default function ForgotPasswordPage() {
+async function getForgotPasswordData() {
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return {
+    title: "Forgot Password",
+    subtitle: "Enter your email to reset your password"
+  };
+}
+
+export default async function ForgotPasswordPage() {
+  const data = await getForgotPasswordData();
+  
   return (
     <AuthContainer>
       <AuthHeader
-        title="Forgot Password"
-        subtitle="Enter your email to reset your password"
+        title={data.title}
+        subtitle={data.subtitle}
       />
       
       <AuthForm>

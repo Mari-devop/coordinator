@@ -6,12 +6,22 @@ import AuthButton from "../_components/_auth/AuthButton";
 import AuthFooter from "../_components/_auth/AuthFooter";
 import RememberMeSection from "../_components/_auth/RememberMeSection";
 
-export default function LoginPage() {
+async function getLoginData() {
+  await new Promise(resolve => setTimeout(resolve, 500)); 
+  return {
+    title: "Welcome Back",
+    subtitle: "Sign in to your account to continue"
+  };
+}
+
+export default async function LoginPage() {
+  const data = await getLoginData();
+  
   return (
     <AuthContainer>
       <AuthHeader
-        title="Welcome Back"
-        subtitle="Sign in to your account to continue"
+        title={data.title}
+        subtitle={data.subtitle}
       />
 
       <AuthForm>

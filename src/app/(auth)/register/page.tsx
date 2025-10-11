@@ -6,12 +6,22 @@ import AuthButton from "../_components/_auth/AuthButton";
 import AuthFooter from "../_components/_auth/AuthFooter";
 import TermsCheckbox from "../_components/_auth/TermsCheckbox";
 
-export default function RegisterPage() {
-    return (
+async function getRegisterData() {
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return {
+    title: "Create Account",
+    subtitle: "Join us today and get started"
+  };
+}
+
+export default async function RegisterPage() {
+  const data = await getRegisterData();
+  
+  return (
         <AuthContainer>
             <AuthHeader
-                title="Create Account"
-                subtitle="Join us today and get started"
+                title={data.title}
+                subtitle={data.subtitle}
             />
             
             <AuthForm>
