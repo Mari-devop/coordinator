@@ -1,5 +1,5 @@
 "use client";
-import { inputStyles } from "../_styles/authStyles";
+import { inputStyles } from "../../_styles/authStyles";
 
 interface AuthInputProps {
     id: string;

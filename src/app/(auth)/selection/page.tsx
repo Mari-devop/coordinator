@@ -5,3 +5,7 @@ export default function SelectionPage() {
         </div>
     )
 }
+
+//TODO: #2 Add the selection page here
+
+//TODO: #3 Add skelton loader here

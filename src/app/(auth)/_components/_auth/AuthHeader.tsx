@@ -1,5 +1,5 @@
 "use client";
-import { titleStyles } from "../_styles/authStyles";
+import { titleStyles } from "../../_styles/authStyles";
 
 interface AuthHeaderProps {
     title: string;
