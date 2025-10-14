@@ -16,7 +16,7 @@ export default function ManagerModeSettings({
         <div className={managerModeStyles.info}>
           <h3 className={managerModeStyles.title}>Manager Mode</h3>
           <h4 className={managerModeStyles.subtitle}>
-            Enable Manager Features
+            Enable advanced management features
           </h4>
           <p className={managerModeStyles.description}>
             If enabled, you can see and manage your co-workers list

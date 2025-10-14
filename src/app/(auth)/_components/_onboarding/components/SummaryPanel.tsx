@@ -1,4 +1,4 @@
-import { OnboardingData } from "../../../../_types/onboardingTypes";
+import { OnboardingData } from "../../../../../_types/onboardingTypes";
 import { onboardingStyles } from "../../../_styles/onboardingStyles";
 
 interface SummaryPanelProps {

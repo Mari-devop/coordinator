@@ -34,7 +34,7 @@ export default function LoginPage() {
         <RememberMeSection />
 
         <AuthButton type="submit">
-          Sign in
+          Sign In
         </AuthButton>
       </AuthForm>
 

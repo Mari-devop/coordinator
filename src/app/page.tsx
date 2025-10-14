@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 
-export default function Home() {
+export default function RootPage() {
+  // Redirect to register page
   redirect('/register');
 }

@@ -1,3 +1,4 @@
+"use client";
 import { settingsHeaderStyles } from "../../_styles/settingsStyles";
 
 export default function SettingsHeader() {

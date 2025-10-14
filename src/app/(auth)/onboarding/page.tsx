@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { OnboardingData } from "../../_types/onboardingTypes";
+import { OnboardingData } from "../../../_types/onboardingTypes";
 import { steps } from "../_components/_onboarding/constants";
 import { 
   ProgressHeader, 

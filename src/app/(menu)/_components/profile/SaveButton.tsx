@@ -17,7 +17,7 @@ export default function SaveButton({
         disabled={disabled}
         className={`px-6 py-3 font-medium rounded-lg ${sharedButtonStyles.primary} disabled:opacity-50 disabled:cursor-not-allowed`}
       >
-        Save Changes
+        Save Settings
       </button>
     </div>
   );

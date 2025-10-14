@@ -5,21 +5,17 @@ import GeneralSettingsSection from "../_components/settings/GeneralSettingsSecti
 import GoogleAdsSection from "../_components/profile/GoogleAdsSection";
 import SaveButton from "../_components/profile/SaveButton";
 
-//TODO: #4 Add the language selector here
-
 export default function SettingsPage() {
-    const [language, setLanguage] = useState("en");
     const [emailNotifications, setEmailNotifications] = useState(true);
     const [managerMode, setManagerMode] = useState(false);
 
     const handleSave = () => {
         console.log("Saving settings:", {
-            language,
             emailNotifications,
             managerMode,
         });
 
-        //TODO: Add a toast notification here
+        // Show success message
         alert("Settings saved successfully!");
     };
 
@@ -28,10 +24,8 @@ export default function SettingsPage() {
             <SettingsHeader />
             
             <GeneralSettingsSection
-                language={language}
                 emailNotifications={emailNotifications}
                 managerMode={managerMode}
-                onLanguageChange={setLanguage}
                 onEmailNotificationsChange={setEmailNotifications}
                 onManagerModeChange={setManagerMode}
             />

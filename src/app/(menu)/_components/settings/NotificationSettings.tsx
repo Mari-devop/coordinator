@@ -14,13 +14,13 @@ export default function NotificationSettings({
   return (
     <div className={notificationStyles.container}>
       <h3 className="text-lg font-semibold text-[var(--fontColor)] mb-4">
-        Notifications Preferences
+        Notifications
       </h3>
       <ToggleSwitch
         checked={emailNotifications}
         onChange={onEmailNotificationsChange}
         label="Email Notifications"
-        description="Receive important updates via email"
+        description="Receive email notifications about important updates"
       />
     </div>
   );
