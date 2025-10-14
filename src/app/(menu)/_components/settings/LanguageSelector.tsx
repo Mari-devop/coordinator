@@ -1,30 +1,45 @@
 "use client";
+import { useTranslations, useLocale } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
 import { languageSelectorStyles } from "../../_styles/settingsStyles";
 
-interface LanguageSelectorProps {
-  language: string;
-  onLanguageChange: (language: string) => void;
-}
+const languages = {
+  en: { flag: '🇺🇸', name: 'English' },
+  ua: { flag: '🇺🇦', name: 'Українська' },
+  fr: { flag: '🇫🇷', name: 'Français' }
+} as const;
 
-export default function LanguageSelector({
-  language,
-  onLanguageChange,
-}: LanguageSelectorProps) {
+export default function LanguageSelector() {
+  const t = useTranslations('Settings');
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleLanguageChange = (newLocale: string) => {
+    // Remove the current locale from the pathname
+    const pathWithoutLocale = pathname.replace(`/${locale}`, '');
+    // Navigate to the new locale
+    router.push(`/${newLocale}${pathWithoutLocale}`);
+  };
+
   return (
     <div className={languageSelectorStyles.container}>
       <div className={languageSelectorStyles.info}>
-        <h3 className={languageSelectorStyles.title}>Language</h3>
+        <h3 className={languageSelectorStyles.title}>{t('language')}</h3>
         <p className={languageSelectorStyles.subtitle}>
-          Select your preferred language
+          {t('languageSubtitle')}
         </p>
       </div>
       <select
-        value={language}
-        onChange={(e) => onLanguageChange(e.target.value)}
+        value={locale}
+        onChange={(e) => handleLanguageChange(e.target.value)}
         className={languageSelectorStyles.select}
       >
-        <option value="en">🇺🇸 English</option>
-        <option value="ua">🇺🇦 Ukrainian</option>
+        {Object.entries(languages).map(([code, lang]) => (
+          <option key={code} value={code}>
+            {lang.flag} {lang.name}
+          </option>
+        ))}
       </select>
     </div>
   );

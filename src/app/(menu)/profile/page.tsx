@@ -96,7 +96,7 @@ export default function ProfilePage() {
         }
     };
 
-    const handlePasswordChange = async (currentPassword: string, newPassword: string) => {
+    const handlePasswordChange = async () => {
         setIsLoading(true);
 
         try {

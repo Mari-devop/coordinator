@@ -12,14 +12,14 @@ export default function AuthLayout({
   const { layout, animation } = authLayoutStyles;
   
   const isAuthPage =
-    pathname === "/login" ||
-    pathname === "/register" ||
-    pathname === "/forgot-password" ||
-    pathname === "/privacy-policy" ||
-    pathname === "/terms-and-condition";
+    pathname.includes("/login") ||
+    pathname.includes("/register") ||
+    pathname.includes("/forgot-password") ||
+    pathname.includes("/privacy-policy") ||
+    pathname.includes("/terms-and-condition");
 
-  const isContentPage = pathname === "/privacy-policy" || pathname === "/terms-and-condition";
-  const isOnboardingPage = pathname === "/onboarding";
+  const isContentPage = pathname.includes("/privacy-policy") || pathname.includes("/terms-and-condition");
+  const isOnboardingPage = pathname.includes("/onboarding");
   
   const containerWidth = isOnboardingPage 
     ? "" 
@@ -42,12 +42,12 @@ export default function AuthLayout({
             </div>
             <nav className={layout.header.navContainer}>
               {!isAuthPage && (
-                <a
+                <Link
                   href="/logout"
                   className={`${layout.navigation.logoutLink} ${animation.focus.logout}`}
                 >
                   Log out
-                </a>
+                </Link>
               )}
             </nav>
           </div>

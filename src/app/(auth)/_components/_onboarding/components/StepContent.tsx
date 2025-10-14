@@ -1,4 +1,4 @@
-import { OnboardingData } from "../../../../_types/onboardingTypes";
+import { OnboardingData } from "../../../../../_types/onboardingTypes";
 import { steps } from "../constants";
 import { onboardingStyles } from "../../../_styles/onboardingStyles";
 

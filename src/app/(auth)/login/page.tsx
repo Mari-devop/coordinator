@@ -44,7 +44,7 @@ export default async function LoginPage() {
         <RememberMeSection />
 
         <AuthButton type="submit">
-          Sign in
+          Sign In
         </AuthButton>
       </AuthForm>
 

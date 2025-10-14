@@ -1,6 +1,6 @@
-import InviteSection from "../../../../(menu)/_components/coWorker/InviteSection";
+// import InviteSection from "../../../../../(menu)/_components/coWorker/InviteSection";
 import SummaryPanel from "./SummaryPanel";
-import { OnboardingData } from "../../../../_types/onboardingTypes";
+import { OnboardingData } from "../../../../../_types/onboardingTypes";
 import { onboardingStyles } from "../../../_styles/onboardingStyles";
 
 interface InviteSectionWrapperProps {
@@ -34,10 +34,16 @@ export default function InviteSectionWrapper({ formData, onClose }: InviteSectio
           </p>
         </div>
         <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
-          <InviteSection 
-            isOpen={true} 
-            onClose={onClose} 
-          />
+          <div className="text-center">
+            <h3 className="text-lg font-semibold mb-4">Invite Co-Workers</h3>
+            <p className="text-gray-600 mb-4">This feature will be available soon.</p>
+            <button
+              onClick={onClose}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
       <div>
