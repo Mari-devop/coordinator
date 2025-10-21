@@ -8,3 +8,5 @@ export { default as AuthCheckbox } from './AuthCheckbox';
 export { default as AuthFooter } from './AuthFooter';
 export { default as RememberMeSection } from './RememberMeSection';
 export { default as TermsCheckbox } from './TermsCheckbox';
+export { default as GoogleSignInButton } from './GoogleSignInButton';
+export { default as AuthDivider } from './AuthDivider';

@@ -51,10 +51,25 @@
   --color-shadowColor: var(--shadowColor);
 }
 
+html {
+  /* Prevent zoom on input focus on iOS */
+  -webkit-text-size-adjust: 100%;
+  /* Fix viewport height issues on mobile */
+  height: 100%;
+  height: -webkit-fill-available;
+}
+
 body {
   background: var(--background);
   color: var(--fontColor);
   font-family: var(--font-wix-madefor-display), var(--font-dm-sans);
+  /* Fix viewport height issues on mobile */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  /* Prevent horizontal scroll */
+  overflow-x: hidden;
+  /* Fix padding issues on mobile */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Animations */
@@ -71,4 +86,55 @@ body {
 
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-out;
+}
+
+/* Mobile-specific fixes */
+@media screen and (max-width: 768px) {
+  /* Fix for Chrome mobile padding issue */
+  body {
+    padding-bottom: 0 !important;
+  }
+  
+  /* Fix for Safari keyboard padding */
+  .mobile-container {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    padding-bottom: 0;
+  }
+  
+  /* Prevent input zoom on iOS */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+  
+  /* Fix for auth forms on mobile */
+  .auth-form-container {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+    padding-bottom: 0;
+  }
+  
+  /* Additional mobile fixes */
+  .mobile-container {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Fix for iOS Safari address bar */
+  @supports (-webkit-touch-callout: none) {
+    .mobile-container {
+      min-height: -webkit-fill-available;
+    }
+  }
 }

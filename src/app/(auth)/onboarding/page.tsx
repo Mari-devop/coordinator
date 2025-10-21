@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { OnboardingData } from "../../../_types/onboardingTypes";
+import { OnboardingData } from "../../_types/onboardingTypes";
 import { steps } from "../_components/_onboarding/constants";
 import { 
   ProgressHeader, 
@@ -45,14 +45,14 @@ export default function OnboardingPage() {
     // TODO: Handle form submission
   };
 
-  const isStepValid = () => {
+  const isStepValid = (): boolean => {
     switch (currentStep) {
       case 1:
-        return formData.firstName && formData.lastName && formData.mobile;
+        return !!(formData.firstName && formData.lastName && formData.mobile);
       case 2:
-        return formData.company && formData.role;
+        return !!(formData.company && formData.role);
       case 3:
-        return formData.userType;
+        return !!formData.userType;
       case 4:
         return true; // Optional step
       case 5:
@@ -84,7 +84,7 @@ export default function OnboardingPage() {
                 <StepContent 
                   currentStep={currentStep}
                   formData={formData}
-                  onInputChange={handleInputChange}
+                  onInputChange={(field: string | number | symbol, value: string) => handleInputChange(field as keyof OnboardingData, value)}
                   onToggleInviteSection={setShowInviteSection}
                   onNextStep={nextStep}
                 />
@@ -94,7 +94,7 @@ export default function OnboardingPage() {
               <NavigationButtons 
                 currentStep={currentStep}
                 totalSteps={steps.length}
-                isStepValid={isStepValid() as boolean}
+                isStepValid={isStepValid()}
                 onPrevStep={prevStep}
                 onNextStep={nextStep}
                 onSubmit={handleSubmit}
