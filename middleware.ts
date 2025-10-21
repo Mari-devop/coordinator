@@ -1,4 +1,5 @@
 import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 
 export default withAuth(
   function middleware(req) {
@@ -7,11 +8,26 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        if (req.nextUrl.pathname.startsWith("/dashboard") || 
-            req.nextUrl.pathname.startsWith("/menu")) {
-          return !!token;
+        const { pathname } = req.nextUrl;
+        
+        const publicRoutes = [
+          "/login",
+          "/register", 
+          "/forgot-password",
+          "/privacy-policy",
+          "/terms-and-condition",
+          "/api/auth", 
+        ];
+        
+        const isPublicRoute = publicRoutes.some(route => 
+          pathname.startsWith(route)
+        );
+        
+        if (isPublicRoute) {
+          return true;
         }
-        return true;
+        
+        return !!token;
       },
     },
   }
@@ -19,7 +35,6 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",
-    "/menu/:path*",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

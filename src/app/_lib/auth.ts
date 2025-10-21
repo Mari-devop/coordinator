@@ -66,8 +66,33 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        try {
+          const existingUser = await prisma.user.findUnique({
+            where: {
+              email: user.email!
+            }
+          });
+
+          if (!existingUser) {
+            await prisma.user.create({
+              data: {
+                email: user.email!,
+                name: user.name || user.email!.split('@')[0],
+                password: '', 
+              }
+            });
+          }
+        } catch (error) {
+          console.error("Error in signIn callback:", error);
+          return false;
+        }
+      }
+      return true;
+    },
     async redirect({ url, baseUrl }) {
-      if (url.startsWith("/dashboard") || url.startsWith("/menu")) {
+      if (url.startsWith("/dashboard") || url.startsWith("/menu") || url.startsWith("/onboarding")) {
         return `${baseUrl}/onboarding`;
       }
       if (url.startsWith("/")) return `${baseUrl}${url}`;

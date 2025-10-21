@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./_styles/globals.css";
 import { Providers } from "./providers";
+import LogoutButton from "./_components/LogoutButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +26,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          {children}
+          <div className="relative">
+            <div className="fixed top-4 right-4 z-50">
+              <LogoutButton />
+            </div>
+            {children}
+          </div>
         </Providers>
       </body>
     </html>

@@ -1,4 +1,5 @@
 "use client";
+import { forwardRef } from "react";
 import { inputStyles } from "../../_styles/authStyles";
 
 interface AuthInputProps {
@@ -12,7 +13,7 @@ interface AuthInputProps {
     className?: string;
 }
 
-export default function AuthInput({
+const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(({
     id,
     label,
     type,
@@ -21,21 +22,26 @@ export default function AuthInput({
     onChange,
     required = false,
     className = ""
-}: AuthInputProps) {
+}, ref) => {
     return (
         <div className={className}>
             <label htmlFor={id} className={inputStyles.label}>
                 {label}
             </label>
             <input
+                ref={ref}
                 type={type}
                 id={id}
                 className={inputStyles.input}
                 placeholder={placeholder}
-                value={value}
-                onChange={onChange}
+                {...(value !== undefined && { value })}
+                {...(onChange && { onChange })}
                 required={required}
             />
         </div>
     );
-}
+});
+
+AuthInput.displayName = "AuthInput";
+
+export default AuthInput;

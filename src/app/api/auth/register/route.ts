@@ -1,17 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/app/_lib/db";
+import { apiRegisterSchema } from "@/app/_lib/validations";
+import { ZodIssue } from "zod";
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    const body = await request.json();
 
-    if (!email || !password) {
+    const validationResult = apiRegisterSchema.safeParse(body);
+    
+    if (!validationResult.success) {
       return NextResponse.json(
-        { message: "Email and password are required" },
+        { 
+          message: "Validation failed",
+          errors: validationResult.error.issues.map((err: ZodIssue) => ({
+            field: err.path.join('.'),
+            message: err.message,
+            received: err.input
+          }))
+        },
         { status: 400 }
       );
     }
+
+    const { email, password } = validationResult.data;
 
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -35,8 +48,6 @@ export async function POST(request: NextRequest) {
         name: email.split('@')[0]
       }
     });
-
-    console.log("User registered:", { id: user.id, email: user.email });
 
     return NextResponse.json(
       { message: "User registered successfully" },
