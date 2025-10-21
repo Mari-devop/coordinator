@@ -1,11 +1,19 @@
 "use client";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 
 interface ProfileDropdownProps {
   userName?: string;
 }
 
-export default function ProfileDropdown({ userName = "John Doe" }: ProfileDropdownProps) {
+export default function ProfileDropdown({ userName }: ProfileDropdownProps) {
+  const { data: session } = useSession();
+  
+  const displayName = userName || session?.user?.name || session?.user?.email || "User";
+  
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/login" });
+  };
   return (
     <div className="flex items-center">
       <div className="relative group">
@@ -25,7 +33,7 @@ export default function ProfileDropdown({ userName = "John Doe" }: ProfileDropdo
           </div>
           
           <span className="hidden sm:block text-sm font-medium text-gray-700">
-            {userName}
+            {displayName}
           </span>
           
           <svg 
@@ -58,7 +66,10 @@ export default function ProfileDropdown({ userName = "John Doe" }: ProfileDropdo
               Settings
             </Link>
             <div className="border-t border-gray-100"></div>
-            <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[var(--accentColor2)] transition-colors duration-200">
+            <button 
+              onClick={handleSignOut}
+              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[var(--accentColor2)] transition-colors duration-200"
+            >
               Sign out
             </button>
           </div>
