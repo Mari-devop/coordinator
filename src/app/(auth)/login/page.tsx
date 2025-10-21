@@ -2,6 +2,9 @@
 import { useState } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginFormData } from "@/app/_lib/validations";
 import AuthContainer from "../_components/_auth/AuthContainer";
 import AuthHeader from "../_components/_auth/AuthHeader";
 import AuthForm from "../_components/_auth/AuthForm";
@@ -11,27 +14,34 @@ import AuthFooter from "../_components/_auth/AuthFooter";
 import RememberMeSection from "../_components/_auth/RememberMeSection";
 import GoogleSignInButton from "../_components/_auth/GoogleSignInButton";
 import AuthDivider from "../_components/_auth/AuthDivider";
+import RedirectIfAuthenticated from "@/app/_components/RedirectIfAuthenticated";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     setError("");
 
     try {
       const result = await signIn("credentials", {
-        email,
-        password,
+        email: data.email,
+        password: data.password,
         redirect: false,
       });
 
       if (result?.error) {
+        console.log("Login error:", result.error);
         setError("Invalid email or password");
       } else {
         const session = await getSession();
@@ -47,55 +57,77 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthContainer>
-      <AuthHeader
-        title="Welcome Back"
-        subtitle="Sign in to your account to continue"
-      />
+    <RedirectIfAuthenticated>
+      <AuthContainer>
+        <AuthHeader
+          title="Welcome Back"
+          subtitle="Sign in to your account to continue"
+        />
 
-      <GoogleSignInButton />
-      
-      <AuthDivider />
+        <GoogleSignInButton />
+        
+        <AuthDivider />
 
-      <AuthForm onSubmit={handleSubmit}>
-        {error && (
-          <div className="text-red-600 text-sm text-center mb-4">
-            {error}
+        <AuthForm onSubmit={handleSubmit(onSubmit)}>
+          {error && (
+            <div className="text-red-600 text-sm text-center mb-4">
+              {error}
+            </div>
+          )}
+
+          <div>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <AuthInput
+                  id="email"
+                  label="Email Address"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+            )}
           </div>
-        )}
 
-        <AuthInput
-          id="email"
-          label="Email Address"
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+          <div>
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <AuthInput
+                  id="password"
+                  label="Password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+            )}
+          </div>
+
+          <RememberMeSection />
+
+          <AuthButton type="submit" disabled={isLoading}>
+            {isLoading ? "Signing In..." : "Sign In"}
+          </AuthButton>
+        </AuthForm>
+
+        <AuthFooter
+          text="Don't have an account?"
+          linkText="Sign up"
+          linkHref="/register"
         />
-
-        <AuthInput
-          id="password"
-          label="Password"
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <RememberMeSection />
-
-        <AuthButton type="submit" disabled={isLoading}>
-          {isLoading ? "Signing In..." : "Sign In"}
-        </AuthButton>
-      </AuthForm>
-
-      <AuthFooter
-        text="Don't have an account?"
-        linkText="Sign up"
-        linkHref="/register"
-      />
-    </AuthContainer>
+      </AuthContainer>
+    </RedirectIfAuthenticated>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
 import { authLayoutStyles } from "./_styles/layoutStyles";
 
 export default function AuthLayout({
@@ -10,20 +9,10 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { data: session } = useSession();
   const { layout, animation } = authLayoutStyles;
   
-  const isAuthPage =
-    pathname.includes("/login") ||
-    pathname.includes("/register") ||
-    pathname.includes("/forgot-password") ||
-    pathname.includes("/privacy-policy") ||
-    pathname.includes("/terms-and-condition");
-
   const isContentPage = pathname.includes("/privacy-policy") || pathname.includes("/terms-and-condition");
   const isOnboardingPage = pathname.includes("/onboarding");
-  
-  const shouldShowLogout = !isAuthPage;
   
   const containerWidth = isOnboardingPage 
     ? "" 
@@ -44,16 +33,6 @@ export default function AuthLayout({
                 Coordinator
               </Link>
             </div>
-            <nav className={layout.header.navContainer}>
-              {shouldShowLogout && (
-                <button
-                  onClick={() => signOut({ callbackUrl: "/login" })}
-                  className={`${layout.navigation.logoutLink} ${animation.focus.logout}`}
-                >
-                  Log out
-                </button>
-              )}
-            </nav>
           </div>
         </div>
       </header>

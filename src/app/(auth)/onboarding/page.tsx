@@ -1,5 +1,8 @@
 "use client";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { OnboardingData } from "../../_types/onboardingTypes";
 import { steps } from "../_components/_onboarding/constants";
 import { 
@@ -12,6 +15,8 @@ import {
 import { onboardingStyles } from "../_styles/onboardingStyles";
 
 export default function OnboardingPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<OnboardingData>({
     firstName: "",
@@ -23,6 +28,27 @@ export default function OnboardingPage() {
   });
   const [showInviteSection, setShowInviteSection] = useState(false);
   const { container, card } = onboardingStyles;
+
+  useEffect(() => {
+    if (status === "loading") return; 
+
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+  }, [session, status, router]);
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[var(--accentColor)]"></div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
 
   const handleInputChange = (field: keyof OnboardingData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -64,21 +90,16 @@ export default function OnboardingPage() {
 
   return (
     <div className={container.main}>
-      {/* Header */}
       <ProgressHeader currentStep={currentStep} />
 
-      {/* Main Content */}
       <div className={container.content}>
         {showInviteSection ? (
-          /* Parallel Route Layout - Invite Section */
           <InviteSectionWrapper 
             formData={formData}
             onClose={() => setShowInviteSection(false)}
           />
         ) : (
-          /* Normal Layout - Step Content + Summary */
           <div className={container.grid}>
-            {/* Step Content */}
             <div className="lg:col-span-2 flex flex-col">
               <div className={card.mainFlex}>
                 <StepContent 
@@ -90,7 +111,6 @@ export default function OnboardingPage() {
                 />
               </div>
 
-              {/* Navigation */}
               <NavigationButtons 
                 currentStep={currentStep}
                 totalSteps={steps.length}
@@ -101,7 +121,6 @@ export default function OnboardingPage() {
               />
             </div>
 
-            {/* Summary Panel */}
             <div className="lg:col-span-1">
               <SummaryPanel formData={formData} />
             </div>
