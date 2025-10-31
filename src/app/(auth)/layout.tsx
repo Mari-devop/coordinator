@@ -11,13 +11,6 @@ export default function AuthLayout({
   const pathname = usePathname();
   const { layout, animation } = authLayoutStyles;
   
-  const isAuthPage =
-    pathname.includes("/login") ||
-    pathname.includes("/register") ||
-    pathname.includes("/forgot-password") ||
-    pathname.includes("/privacy-policy") ||
-    pathname.includes("/terms-and-condition");
-
   const isContentPage = pathname.includes("/privacy-policy") || pathname.includes("/terms-and-condition");
   const isOnboardingPage = pathname.includes("/onboarding");
   
@@ -40,16 +33,6 @@ export default function AuthLayout({
                 Coordinator
               </Link>
             </div>
-            <nav className={layout.header.navContainer}>
-              {!isAuthPage && (
-                <Link
-                  href="/logout"
-                  className={`${layout.navigation.logoutLink} ${animation.focus.logout}`}
-                >
-                  Log out
-                </Link>
-              )}
-            </nav>
           </div>
         </div>
       </header>

@@ -1,5 +1,5 @@
 "use client";
-import { containerStyles } from "../../_styles/authStyles";
+import { containerStyles, mobileStyles } from "../../_styles/authStyles";
 
 interface AuthContainerProps {
     children: React.ReactNode;
@@ -8,8 +8,10 @@ interface AuthContainerProps {
 
 export default function AuthContainer({ children, className = "" }: AuthContainerProps) {
     return (
-        <div className={`${containerStyles.container} ${className}`}>
-            {children}
+        <div className={`mobile-container ${mobileStyles.container} ${className}`}>
+            <div className={`auth-form-container ${containerStyles.container}`}>
+                {children}
+            </div>
         </div>
     );
 }

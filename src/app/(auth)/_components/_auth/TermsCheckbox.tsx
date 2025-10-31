@@ -4,9 +4,15 @@ import AuthLink from "./AuthLink";
 
 interface TermsCheckboxProps {
     className?: string;
+    checked?: boolean;
+    onChange?: (checked: boolean) => void;
 }
 
-export default function TermsCheckbox({ className = "" }: TermsCheckboxProps) {
+export default function TermsCheckbox({ 
+    className = "", 
+    checked, 
+    onChange 
+}: TermsCheckboxProps) {
     return (
         <AuthCheckbox
             id="terms"
@@ -25,6 +31,8 @@ export default function TermsCheckbox({ className = "" }: TermsCheckboxProps) {
             }
             required={true}
             className={className}
+            checked={checked}
+            onCheckedChange={onChange}
         />
     );
 }
