@@ -26,6 +26,8 @@ export default function OnboardingPage() {
     userType: "co-worker"
   });
   const [showInviteSection, setShowInviteSection] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const { container, card } = onboardingStyles;
 
   useEffect(() => {
@@ -65,8 +67,30 @@ export default function OnboardingPage() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Onboarding completed:", formData);
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/onboarding", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to save onboarding data");
+      }
+
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      setIsSubmitting(false);
+    }
   };
 
   const isStepValid = (): boolean => {
@@ -99,6 +123,12 @@ export default function OnboardingPage() {
         ) : (
           <div className={container.grid}>
             <div className="lg:col-span-2 flex flex-col">
+              {error && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-600 text-sm">{error}</p>
+                </div>
+              )}
+              
               <div className={card.mainFlex}>
                 <StepContent 
                   currentStep={currentStep}
@@ -116,6 +146,7 @@ export default function OnboardingPage() {
                 onPrevStep={prevStep}
                 onNextStep={nextStep}
                 onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
               />
             </div>
 

@@ -7,6 +7,7 @@ interface NavigationButtonsProps {
   onPrevStep: () => void;
   onNextStep: () => void;
   onSubmit: () => void;
+  isSubmitting?: boolean;
 }
 
 export default function NavigationButtons({ 
@@ -15,7 +16,8 @@ export default function NavigationButtons({
   isStepValid, 
   onPrevStep, 
   onNextStep, 
-  onSubmit 
+  onSubmit,
+  isSubmitting = false
 }: NavigationButtonsProps) {
   const { navigation } = onboardingStyles;
   
@@ -23,7 +25,7 @@ export default function NavigationButtons({
     <div className={navigation.container}>
       <button
         onClick={onPrevStep}
-        disabled={currentStep === 1}
+        disabled={currentStep === 1 || isSubmitting}
         className={`${navigation.button} ${
           currentStep === 1 
             ? navigation.buttonPreviousDisabled
@@ -36,7 +38,7 @@ export default function NavigationButtons({
       {currentStep < totalSteps ? (
         <button
           onClick={onNextStep}
-          disabled={!isStepValid}
+          disabled={!isStepValid || isSubmitting}
           className={`${navigation.button} ${
             !isStepValid 
               ? navigation.buttonNextDisabled
@@ -48,9 +50,12 @@ export default function NavigationButtons({
       ) : (
         <button
           onClick={onSubmit}
-          className={`${navigation.button} ${navigation.buttonComplete}`}
+          disabled={!isStepValid || isSubmitting}
+          className={`${navigation.button} ${navigation.buttonComplete} ${
+            isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
-          Complete Setup ✨
+          {isSubmitting ? 'Saving...' : 'Complete Setup ✨'}
         </button>
       )}
     </div>

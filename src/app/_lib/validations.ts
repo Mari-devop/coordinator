@@ -50,6 +50,31 @@ export const apiRegisterSchema = z.object({
     ),
 });
 
+export const onboardingSchema = z.object({
+  firstName: z
+    .string()
+    .min(1, "First name is required")
+    .min(2, "First name must be at least 2 characters"),
+  lastName: z
+    .string()
+    .min(1, "Last name is required")
+    .min(2, "Last name must be at least 2 characters"),
+  mobile: z
+    .string()
+    .min(1, "Mobile number is required")
+    .regex(/^\+?[\d\s-()]+$/, "Please enter a valid mobile number"),
+  company: z
+    .string()
+    .min(1, "Company name is required")
+    .min(2, "Company name must be at least 2 characters"),
+  role: z
+    .string()
+    .min(1, "Role is required")
+    .min(2, "Role must be at least 2 characters"),
+  userType: z.enum(["co-worker", "manager"]),
+});
+
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type ApiRegisterData = z.infer<typeof apiRegisterSchema>;
+export type OnboardingFormData = z.infer<typeof onboardingSchema>;

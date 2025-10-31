@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -14,6 +14,14 @@ model User {
   password  String?  // Optional for Google OAuth users
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Onboarding data
+  firstName String?
+  lastName  String?
+  mobile    String?
+  company   String?
+  role      String?
+  userType  String?  // "co-worker" | "manager"
 
   @@map("users")
 }
