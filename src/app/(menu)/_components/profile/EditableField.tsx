@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
-import { editableFieldStyles } from "../../_styles/profileStyles";
-import { sharedInputStyles } from "../../_styles/sharedStyles";
+import Icon from "@/app/_components/icons/Icon";
+import { editableFieldStyles } from "@/app/(menu)/_styles/profileStyles";
+import { sharedInputStyles } from "@/app/(menu)/_styles/sharedStyles";
 
 interface EditableFieldProps {
   label: string;
@@ -14,8 +15,8 @@ interface EditableFieldProps {
 }
 
 export default function EditableField({
-  label,
   value,
+  label,
   type = "text",
   placeholder,
   onSave,
@@ -23,7 +24,7 @@ export default function EditableField({
   error,
 }: EditableFieldProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(value);
+  const [editValue, setEditValue] = useState(value); 
   const [hasError, setHasError] = useState(false);
 
   const handleDoubleClick = () => {
@@ -57,14 +58,24 @@ export default function EditableField({
     }
   };
 
+  const {
+    editContainer,
+    editInputContainer,
+    saveButton,
+    cancelButton,
+    buttonIcon,
+    errorMessage,
+    requiredIndicator,
+  } = editableFieldStyles;
+
   if (isEditing) {
     return (
-      <div className="space-y-2">
+      <div className={editContainer}>
         <label className={sharedInputStyles.label}>
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className={requiredIndicator}>*</span>}
         </label>
-        <div className="flex items-center space-x-2">
+        <div className={editInputContainer}>
           <input
             type={type}
             value={editValue}
@@ -78,76 +89,59 @@ export default function EditableField({
           />
           <button
             onClick={handleSave}
-            className="px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200"
+            className={saveButton}
             title="Save"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+            <Icon
+              name="check"
+              className={buttonIcon}
+            />
           </button>
           <button
             onClick={handleCancel}
-            className="px-3 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200"
+            className={cancelButton}
             title="Cancel"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <Icon
+              name="close"
+              className={buttonIcon}
+            />
           </button>
         </div>
         {hasError && (
-          <p className="text-sm text-red-600">This field is required</p>
+          <p className={errorMessage}>This field is required</p>
         )}
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className={errorMessage}>{error}</p>}
       </div>
     );
   }
 
+  const {
+    display,
+    label: labelStyle,
+    value: valueStyle,
+    valueContainer,
+    editIcon,
+    hintText,
+    notSetValue,
+  } = editableFieldStyles;
+
   return (
     <div
-      className={editableFieldStyles.display}
+      className={display}
       onDoubleClick={handleDoubleClick}
     >
-      <label className={editableFieldStyles.label}>{label}</label>
-      <div className="flex items-center justify-between">
-        <span className={editableFieldStyles.value}>
-          {value || <span className="text-gray-400 italic">Not set</span>}
+      <label className={labelStyle}>{label}</label>
+      <div className={valueContainer}>
+        <span className={valueStyle}>
+          {value || <span className={notSetValue}>Not set</span>}
         </span>
-        <svg
-          className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-          />
-        </svg>
+        <Icon
+          name="edit"
+          className={editIcon}
+        />
       </div>
-      <p className="text-xs text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+      <p className={hintText}>
         Double-click to edit
       </p>
     </div>

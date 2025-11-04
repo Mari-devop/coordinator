@@ -23,5 +23,9 @@ model User {
   role      String?
   userType  String?  // "co-worker" | "manager"
 
+  // Password reset
+  resetToken       String?
+  resetTokenExpiry DateTime?
+
   @@map("users")
 }

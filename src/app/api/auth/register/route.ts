@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
     if (!validationResult.success) {
       return NextResponse.json(
         { 
+          error: "Validation failed",
           message: "Validation failed",
           errors: validationResult.error.issues.map((err: ZodIssue) => ({
             field: err.path.join('.'),
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
     
     if (existingUser) {
       return NextResponse.json(
-        { message: "User with this email already exists" },
+        { error: "User with this email already exists" },
         { status: 400 }
       );
     }
@@ -50,13 +51,23 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: "User registered successfully" },
+      { 
+        success: true,
+        message: "User registered successfully",
+        user: {
+          id: user.id,
+          email: user.email,
+        }
+      },
       { status: 201 }
     );
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { 
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : "An unexpected error occurred"
+      },
       { status: 500 }
     );
   }

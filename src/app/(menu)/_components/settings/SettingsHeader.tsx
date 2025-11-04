@@ -1,5 +1,5 @@
 "use client";
-import { settingsHeaderStyles } from "../../_styles/settingsStyles";
+import { settingsHeaderStyles } from "@/app/(menu)/_styles/settingsStyles";
 
 export default function SettingsHeader() {
   return (

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/_lib/auth";
+import { authOptions } from "@/app/_lib/api/config/auth";
 import { prisma } from "@/app/_lib/db";
 import { onboardingSchema } from "@/app/_lib/validations";
+import type { OnboardingUpdateInput } from "@/app/_lib/api/types/prisma";
 
 export async function POST(request: NextRequest) {
   try {
@@ -56,7 +57,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const updateData = {
+    const updateData: OnboardingUpdateInput = {
       firstName: validatedData.firstName,
       lastName: validatedData.lastName,
       mobile: validatedData.mobile,
@@ -70,8 +71,7 @@ export async function POST(request: NextRequest) {
       where: {
         email: session.user.email,
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data: updateData as any,
+      data: updateData,
     });
 
     return NextResponse.json(

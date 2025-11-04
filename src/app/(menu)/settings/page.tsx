@@ -1,22 +1,18 @@
 "use client";
 import { useState } from "react";
-import SettingsHeader from "../_components/settings/SettingsHeader";
-import GeneralSettingsSection from "../_components/settings/GeneralSettingsSection";
-import GoogleAdsSection from "../_components/profile/GoogleAdsSection";
-import SaveButton from "../_components/profile/SaveButton";
+import { useToast } from "@/app/_contexts/ToastContext";
+import SettingsHeader from "@/app/(menu)/_components/settings/SettingsHeader";
+import GeneralSettingsSection from "@/app/(menu)/_components/settings/GeneralSettingsSection";
+import GoogleAdsSection from "@/app/(menu)/_components/profile/GoogleAdsSection";
+import SaveButton from "@/app/(menu)/_components/profile/SaveButton";
 
 export default function SettingsPage() {
+    const toast = useToast();
     const [emailNotifications, setEmailNotifications] = useState(true);
     const [managerMode, setManagerMode] = useState(false);
 
     const handleSave = () => {
-        console.log("Saving settings:", {
-            emailNotifications,
-            managerMode,
-        });
-
-        // Show success message
-        alert("Settings saved successfully!");
+        toast.success("Settings saved successfully!");
     };
 
     return (

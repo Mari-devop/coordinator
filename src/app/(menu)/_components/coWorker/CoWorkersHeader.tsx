@@ -1,4 +1,4 @@
-import { coWorkerHeaderStyles } from "../../_styles/coWorkerStyles";
+import { coWorkerHeaderStyles } from "@/app/(menu)/_styles/coWorkerStyles";
 
 export default function CoWorkersHeader() {
   return (

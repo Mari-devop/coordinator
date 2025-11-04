@@ -1,5 +1,5 @@
 "use client";
-import { checkboxStyles } from "../../_styles/authStyles";
+import { checkboxStyles } from "@/app/(auth)/_styles/authStyles";
 
 interface AuthCheckboxProps {
     id: string;

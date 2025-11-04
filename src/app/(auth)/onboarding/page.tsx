@@ -2,16 +2,17 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { OnboardingData } from "../../_types/onboardingTypes";
-import { steps } from "../_components/_onboarding/constants";
+import { onboardingApi } from "@/app/_lib/api/onboarding";
+import { OnboardingData } from "@/app/_types/onboardingTypes";
+import { steps } from "@/app/(auth)/_components/_onboarding/constants";
 import { 
   ProgressHeader, 
   StepContent, 
   SummaryPanel, 
   InviteSectionWrapper, 
   NavigationButtons 
-} from "../_components/_onboarding/components";
-import { onboardingStyles } from "../_styles/onboardingStyles";
+} from "@/app/(auth)/_components/_onboarding";
+import { onboardingStyles } from "@/app/(auth)/_styles/onboardingStyles";
 
 export default function OnboardingPage() {
   const { data: session, status } = useSession();
@@ -28,7 +29,8 @@ export default function OnboardingPage() {
   const [showInviteSection, setShowInviteSection] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const { container, card } = onboardingStyles;
+  const [isChecking, setIsChecking] = useState(true);
+  const { container, card, error: errorStyles } = onboardingStyles;
 
   useEffect(() => {
     if (status === "loading") return; 
@@ -37,9 +39,26 @@ export default function OnboardingPage() {
       router.push("/login");
       return;
     }
+
+    const checkOnboardingStatus = async () => {
+      try {
+        const data = await onboardingApi.checkOnboardingStatus();
+
+        if (data.completed) {
+          router.push("/dashboard");
+          return;
+        }
+      } catch (error) {
+        console.error("Error checking onboarding status:", error);
+      } finally {
+        setIsChecking(false);
+      }
+    };
+
+    checkOnboardingStatus();
   }, [session, status, router]);
 
-  if (status === "loading") {
+  if (status === "loading" || isChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[var(--accentColor)]"></div>
@@ -72,20 +91,7 @@ export default function OnboardingPage() {
     setError("");
 
     try {
-      const response = await fetch("/api/onboarding", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to save onboarding data");
-      }
-
+      await onboardingApi.submitOnboarding(formData);
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -124,8 +130,8 @@ export default function OnboardingPage() {
           <div className={container.grid}>
             <div className="lg:col-span-2 flex flex-col">
               {error && (
-                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-600 text-sm">{error}</p>
+                <div className={errorStyles.container}>
+                  <p className={errorStyles.message}>{error}</p>
                 </div>
               )}
               

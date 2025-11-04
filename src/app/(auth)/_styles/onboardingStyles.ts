@@ -67,6 +67,8 @@ export const onboardingStyles = {
   },
 
   summary: {
+    container: "sticky top-24",
+    card: "bg-white/60 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6",
     title: "text-2xl font-bold text-[var(--fontColor)] mb-8 flex items-center",
     titleIcon: "text-3xl mr-3",
     sections: "space-y-6",
@@ -96,7 +98,12 @@ export const onboardingStyles = {
     title: "text-2xl font-bold text-[var(--fontColor)] flex items-center",
     titleIcon: "text-3xl mr-3",
     closeButton: "text-[var(--textSecondary)] hover:text-[var(--fontColor)] transition-colors duration-200",
-    description: "text-[var(--textSecondary)] mb-6"
+    description: "text-[var(--textSecondary)] mb-6",
+    contentCard: "bg-white/60 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8",
+    contentCenter: "text-center",
+    contentTitle: "text-lg font-semibold mb-4",
+    contentDescription: "text-gray-600 mb-4",
+    contentCloseButton: "px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
   },
 
   navigation: {
@@ -113,5 +120,10 @@ export const onboardingStyles = {
     primary: "px-8 py-4 bg-[var(--accentColor)] text-white font-semibold rounded-xl hover:bg-[var(--accentColor)]/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105",
     secondary: "px-8 py-4 border-2 border-[var(--borderColor)] text-[var(--fontColor)] font-semibold rounded-xl hover:border-[var(--accentColor)] hover:bg-[var(--accentColor)]/5 transition-all duration-200",
     close: "text-[var(--textSecondary)] hover:text-[var(--fontColor)] transition-colors duration-200"
+  },
+
+  error: {
+    container: "mb-4 p-4 bg-red-50 border border-red-200 rounded-lg",
+    message: "text-red-600 text-sm"
   }
 };
