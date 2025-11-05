@@ -10,8 +10,7 @@ export async function POST(request: NextRequest) {
     let body;
     try {
       body = await request.json();
-    } catch (error) {
-      console.error("Error parsing JSON:", error);
+    } catch {
       return NextResponse.json(
         { error: "Invalid JSON body" },
         { status: 400 }
@@ -43,6 +42,9 @@ export async function POST(request: NextRequest) {
     const resetTokenExpiry = new Date();
     resetTokenExpiry.setHours(resetTokenExpiry.getHours() + 1); 
 
+    let emailSent = false;
+    let emailError: string | null = null;
+
     if (user) {
       await prisma.user.update({
         where: { email },
@@ -60,19 +62,28 @@ export async function POST(request: NextRequest) {
           resetUrl,
           userName: user.name || undefined,
         });
-      } catch (emailError) {
-        console.error("Error sending password reset email:", emailError);
+        emailSent = true;
+      } catch (emailErrorObj: unknown) {
+        const errorMessage = emailErrorObj instanceof Error ? emailErrorObj.message : String(emailErrorObj);
+        emailError = errorMessage;
       }
     }
 
+    const isDev = process.env.NODE_ENV === 'development';
     return NextResponse.json(
       {
         message: "If an account with that email exists, we've sent a password reset link.",
+        ...(isDev && {
+          debug: {
+            emailSent,
+            emailError: emailError || null,
+            hasResendKey: !!process.env.RESEND_API_KEY,
+          },
+        }),
       },
       { status: 200 }
     );
-  } catch (error) {
-    console.error("Error processing forgot password request:", error);
+  } catch {
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -12,8 +12,22 @@ export const authApi = {
     );
   },
 
-  async forgotPassword(email: string): Promise<{ message: string }> {
-    return apiRequest<{ message: string }>(
+  async forgotPassword(email: string): Promise<{ 
+    message: string;
+    debug?: {
+      emailSent: boolean;
+      emailError: string | null;
+      hasResendKey: boolean;
+    };
+  }> {
+    return apiRequest<{ 
+      message: string;
+      debug?: {
+        emailSent: boolean;
+        emailError: string | null;
+        hasResendKey: boolean;
+      };
+    }>(
       API_ENDPOINTS.auth.forgotPassword,
       {
         method: "POST",

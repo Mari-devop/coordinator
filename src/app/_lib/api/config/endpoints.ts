@@ -18,5 +18,11 @@ export const API_ENDPOINTS = {
     forgotPassword: "/api/auth/forgot-password",
     resetPassword: "/api/auth/reset-password",
   },
+
+  settings: {
+    base: "/api/settings",
+    get: () => API_ENDPOINTS.settings.base,
+    update: () => API_ENDPOINTS.settings.base,
+  },
 } as const;
 

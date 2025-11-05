@@ -27,5 +27,9 @@ model User {
   resetToken       String?
   resetTokenExpiry DateTime?
 
+  // Settings
+  emailNotifications Boolean @default(true)
+  managerMode        Boolean @default(false)
+
   @@map("users")
 }
