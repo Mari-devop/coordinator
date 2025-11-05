@@ -1,5 +1,5 @@
 "use client";
-import { coWorkerTabsStyles } from "../../_styles/coWorkerStyles";
+import { coWorkerTabsStyles } from "@/app/(menu)/_styles/coWorkerStyles";
 
 interface Tab {
   id: "overview" | "reports" | "activity";

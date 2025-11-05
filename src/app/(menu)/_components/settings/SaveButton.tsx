@@ -1,5 +1,6 @@
 "use client";
-import { saveButtonStyles } from "../../_styles/settingsStyles";
+import Icon from "@/app/_components/icons/Icon";
+import { saveButtonStyles } from "@/app/(menu)/_styles/settingsStyles";
 
 interface SaveButtonProps {
   onSave: () => void;
@@ -19,19 +20,12 @@ export default function SaveButton({
         disabled={disabled || isLoading}
         className={saveButtonStyles.button}
       >
-        <svg
+        <Icon
+          name="check"
           className={saveButtonStyles.icon}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
+          width={20}
+          height={20}
+        />
         {isLoading ? "Saving..." : "Save Changes"}
       </button>
     </div>

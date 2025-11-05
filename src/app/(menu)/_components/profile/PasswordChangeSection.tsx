@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import FormInput from "./FormInput";
-import { profileSectionStyles } from "../../_styles/profileStyles";
-import { sharedButtonStyles } from "../../_styles/sharedStyles";
+import Icon from "@/app/_components/icons/Icon";
+import { passwordChangeSchema, validatePasswordChangeField } from "@/app/_lib/validations";
+import { profileSectionStyles, profileStyles } from "@/app/(menu)/_styles/profileStyles";
+import { sharedButtonStyles } from "@/app/(menu)/_styles/sharedStyles";
 
 interface PasswordChangeSectionProps {
     onPasswordChange: (currentPassword: string, newPassword: string) => void;
@@ -31,35 +33,30 @@ export default function PasswordChangeSection({
             [field]: value,
         }));
 
-        if (errors[field as keyof typeof errors]) {
-            setErrors(prev => ({
-                ...prev,
-                [field]: undefined,
-            }));
-        }
+        const error = validatePasswordChangeField(field, value, { ...formData, [field]: value });
+        setErrors(prev => ({
+            ...prev,
+            [field]: error,
+        }));
     };
 
     const validateForm = () => {
-        const newErrors: typeof errors = {};
-
-        if (!formData.currentPassword) {
-            newErrors.currentPassword = "Current password is required";
+        const result = passwordChangeSchema.safeParse(formData);
+        
+        if (!result.success) {
+            const newErrors: typeof errors = {};
+            result.error.issues.forEach((issue) => {
+                const field = issue.path[0] as keyof typeof errors;
+                if (field) {
+                    newErrors[field] = issue.message;
+                }
+            });
+            setErrors(newErrors);
+            return false;
         }
 
-        if (!formData.newPassword) {
-            newErrors.newPassword = "New password is required";
-        } else if (formData.newPassword.length < 8) {
-            newErrors.newPassword = "Password must be at least 8 characters long";
-        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.newPassword)) {
-            newErrors.newPassword = "Password must contain at least one uppercase letter, one lowercase letter, and one number";
-        }
-
-        if (formData.newPassword !== formData.confirmPassword) {
-            newErrors.confirmPassword = "Passwords do not match";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        setErrors({});
+        return true;
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -80,35 +77,40 @@ export default function PasswordChangeSection({
         setIsExpanded(false);
     };
 
+    const { passwordChange } = profileStyles;
+
     return (
         <section className={profileSectionStyles.container}>
             <div className={profileSectionStyles.header}>
-                <h2 className={`${profileSectionStyles.title} flex items-center`}>
-                    <span className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
-                        <svg className="w-4 h-4 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                        </svg>
+                <h2 className={passwordChange.title}>
+                    <span className={passwordChange.titleIconContainer}>
+                        <Icon
+                            name="lock"
+                            className={passwordChange.titleIcon}
+                            width={16}
+                            height={16}
+                        />
                     </span>
                     Security
                 </h2>
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="px-4 py-2 text-sm font-medium text-[var(--accentColor)] hover:text-[var(--lightAccentColor)] transition-colors duration-200"
+                    className={passwordChange.toggleButton}
                 >
                     {isExpanded ? 'Cancel' : 'Change Password'}
                 </button>
             </div>
 
             {!isExpanded ? (
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                        <h3 className="font-medium text-gray-900">Password</h3>
-                        <p className="text-sm text-gray-600">Last updated 3 months ago</p>
+                <div className={passwordChange.collapsedState}>
+                    <div className={passwordChange.collapsedContent}>
+                        <h3 className={passwordChange.collapsedTitle}>Password</h3>
+                        <p className={passwordChange.collapsedSubtitle}>Last updated 3 months ago</p>
                     </div>
-                    <span className="text-sm text-gray-500">••••••••</span>
+                    <span className={passwordChange.collapsedMask}>••••••••</span>
                 </div>
             ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className={passwordChange.form}>
                     <FormInput
                         id="currentPassword"
                         label="Current Password"
@@ -139,7 +141,7 @@ export default function PasswordChangeSection({
                         required
                         error={errors.confirmPassword}
                     />
-                    <div className="flex justify-end space-x-3 pt-4">
+                    <div className={passwordChange.actions}>
                         <button
                             type="button"
                             onClick={() => setIsExpanded(false)}
@@ -150,7 +152,7 @@ export default function PasswordChangeSection({
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className={`${sharedButtonStyles.primary} disabled:opacity-50 disabled:cursor-not-allowed`}
+                            className={`${sharedButtonStyles.primary} ${passwordChange.submitButton}`}
                         >
                             {isLoading ? 'Updating...' : 'Update Password'}
                         </button>

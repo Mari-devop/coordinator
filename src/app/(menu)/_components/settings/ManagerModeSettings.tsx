@@ -1,5 +1,5 @@
 "use client";
-import { managerModeStyles, toggleStyles } from "../../_styles/settingsStyles";
+import { managerModeStyles, toggleStyles } from "@/app/(menu)/_styles/settingsStyles";
 
 interface ManagerModeSettingsProps {
   managerMode: boolean;

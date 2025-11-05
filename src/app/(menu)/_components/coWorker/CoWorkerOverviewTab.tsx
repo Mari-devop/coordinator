@@ -1,7 +1,7 @@
 "use client";
-import { CoWorker } from "@/app/_types/profile";
+import { CoWorker } from "@/app/_types/coworker";
 import { getStatusColor } from "@/app/_lib/co-worker.utils";
-import { coWorkerTabContentStyles } from "../../_styles/coWorkerStyles";
+import { coWorkerTabContentStyles } from "@/app/(menu)/_styles/coWorkerStyles";
 
 interface CoWorkerOverviewTabProps {
   coWorker: CoWorker;

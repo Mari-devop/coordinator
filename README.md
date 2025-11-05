@@ -2,19 +2,58 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- Docker (для локального PostgreSQL) - [установить Docker](https://www.docker.com/get-started)
+- Или локальная установка PostgreSQL
+
+### Setup
+
+1. **Установите зависимости:**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Запустите PostgreSQL (через Docker):**
+```bash
+npm run db:start
+```
+
+**Альтернатива:** Если Docker не установлен, используйте локальный PostgreSQL или Supabase cloud.
+
+3. **Настройте переменные окружения:**
+Создайте `.env.local` файл:
+```env
+DATABASE_URL="postgresql://coordinator:coordinator@localhost:5432/coordinator_dev?schema=public"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="generate-with: openssl rand -base64 32"
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
+
+4. **Примените миграции базы данных:**
+```bash
+npm run db:migrate
+```
+
+5. **Запустите dev сервер:**
+```bash
+npm run dev
+```
+
+Откройте [http://localhost:3000](http://localhost:3000) в браузере.
+
+### Полезные команды
+
+```bash
+npm run db:start      # Запустить PostgreSQL
+npm run db:stop       # Остановить PostgreSQL
+npm run db:studio     # Открыть Prisma Studio
+npm run db:migrate    # Применить миграции
+```
+
+📖 Подробная документация: `documentation/POSTGRESQL_SETUP.md`
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

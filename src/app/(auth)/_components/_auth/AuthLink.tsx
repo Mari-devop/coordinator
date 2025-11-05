@@ -1,5 +1,5 @@
 "use client";
-import { linkStyles } from "../../_styles/authStyles";
+import { linkStyles } from "@/app/(auth)/_styles/authStyles";
 
 interface AuthLinkProps {
     href: string;

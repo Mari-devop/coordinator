@@ -2,16 +2,17 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { OnboardingData } from "../../_types/onboardingTypes";
-import { steps } from "../_components/_onboarding/constants";
+import { onboardingApi } from "@/app/_lib/api/onboarding";
+import { OnboardingData } from "@/app/_types/onboardingTypes";
+import { steps } from "@/app/(auth)/_components/_onboarding/constants";
 import { 
   ProgressHeader, 
   StepContent, 
   SummaryPanel, 
   InviteSectionWrapper, 
   NavigationButtons 
-} from "../_components/_onboarding/components";
-import { onboardingStyles } from "../_styles/onboardingStyles";
+} from "@/app/(auth)/_components/_onboarding";
+import { onboardingStyles } from "@/app/(auth)/_styles/onboardingStyles";
 
 export default function OnboardingPage() {
   const { data: session, status } = useSession();
@@ -26,7 +27,10 @@ export default function OnboardingPage() {
     userType: "co-worker"
   });
   const [showInviteSection, setShowInviteSection] = useState(false);
-  const { container, card } = onboardingStyles;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [isChecking, setIsChecking] = useState(true);
+  const { container, card, error: errorStyles } = onboardingStyles;
 
   useEffect(() => {
     if (status === "loading") return; 
@@ -35,9 +39,26 @@ export default function OnboardingPage() {
       router.push("/login");
       return;
     }
+
+    const checkOnboardingStatus = async () => {
+      try {
+        const data = await onboardingApi.checkOnboardingStatus();
+
+        if (data.completed) {
+          router.push("/dashboard");
+          return;
+        }
+      } catch (error) {
+        console.error("Error checking onboarding status:", error);
+      } finally {
+        setIsChecking(false);
+      }
+    };
+
+    checkOnboardingStatus();
   }, [session, status, router]);
 
-  if (status === "loading") {
+  if (status === "loading" || isChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[var(--accentColor)]"></div>
@@ -65,8 +86,17 @@ export default function OnboardingPage() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Onboarding completed:", formData);
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      await onboardingApi.submitOnboarding(formData);
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      setIsSubmitting(false);
+    }
   };
 
   const isStepValid = (): boolean => {
@@ -99,6 +129,12 @@ export default function OnboardingPage() {
         ) : (
           <div className={container.grid}>
             <div className="lg:col-span-2 flex flex-col">
+              {error && (
+                <div className={errorStyles.container}>
+                  <p className={errorStyles.message}>{error}</p>
+                </div>
+              )}
+              
               <div className={card.mainFlex}>
                 <StepContent 
                   currentStep={currentStep}
@@ -116,6 +152,7 @@ export default function OnboardingPage() {
                 onPrevStep={prevStep}
                 onNextStep={nextStep}
                 onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
               />
             </div>
 

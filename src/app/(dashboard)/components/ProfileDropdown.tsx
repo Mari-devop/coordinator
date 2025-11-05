@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import Icon from "@/app/_components/icons/Icon";
 
 interface ProfileDropdownProps {
   userName?: string;
@@ -19,48 +20,36 @@ export default function ProfileDropdown({ userName }: ProfileDropdownProps) {
       <div className="relative group">
         <button className="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-50 transition-colors duration-200">
           <div className="w-8 h-8 bg-gradient-to-br from-[var(--secondaryBackground)] to-[var(--accentColor)] rounded-full flex items-center justify-center">
-            <svg 
+            <Icon 
+              name="user"
               className="w-5 h-5 text-white" 
-              fill="currentColor" 
-              viewBox="0 0 20 20"
-            >
-              <path 
-                fillRule="evenodd" 
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" 
-                clipRule="evenodd" 
-              />
-            </svg>
+              width={20}
+              height={20}
+            />
           </div>
           
           <span className="hidden sm:block text-sm font-medium text-gray-700">
             {displayName}
           </span>
           
-          <svg 
+          <Icon 
+            name="chevron-down"
             className="w-4 h-4 text-gray-400" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M19 9l-7 7-7-7" 
-            />
-          </svg>
+            width={16}
+            height={16}
+          />
         </button>
 
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
           <div className="py-1">
             <Link 
-              href="/dashboard/profile" 
+              href="/profile" 
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[var(--accentColor)] transition-colors duration-200"
             >
               View Profile
             </Link>
             <Link 
-              href="/dashboard/settings" 
+              href="/settings" 
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[var(--accentColor)] transition-colors duration-200"
             >
               Settings

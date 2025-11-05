@@ -1,5 +1,5 @@
 "use client";
-import { buttonStyles } from "../../_styles/authStyles";
+import { buttonStyles } from "@/app/(auth)/_styles/authStyles";
 
 interface AuthButtonProps {
     type?: "button" | "submit" | "reset";

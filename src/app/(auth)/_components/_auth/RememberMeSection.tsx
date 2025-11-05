@@ -1,16 +1,20 @@
 "use client";
-import { containerStyles } from "../../_styles/authStyles";
+import { containerStyles } from "@/app/(auth)/_styles/authStyles";
 import AuthCheckbox from "./AuthCheckbox";
 import AuthLink from "./AuthLink";
 
 interface RememberMeSectionProps {
     forgotPasswordHref?: string;
     className?: string;
+    checked?: boolean;
+    onCheckedChange?: (checked: boolean) => void;
 }
 
 export default function RememberMeSection({ 
     forgotPasswordHref = "/forgot-password", 
-    className = "" 
+    className = "",
+    checked = false,
+    onCheckedChange,
 }: RememberMeSectionProps) {
     return (
         <div className={`${containerStyles.approvedContainer} ${className}`}>
@@ -18,6 +22,8 @@ export default function RememberMeSection({
                 id="remember-me"
                 name="remember-me"
                 label="Remember me"
+                checked={checked}
+                onCheckedChange={onCheckedChange}
             />
             
             {forgotPasswordHref && (

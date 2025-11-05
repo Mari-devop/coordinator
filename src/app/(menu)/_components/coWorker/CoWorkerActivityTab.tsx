@@ -1,5 +1,5 @@
 "use client";
-import { coWorkerTabContentStyles } from "../../_styles/coWorkerStyles";
+import { coWorkerTabContentStyles } from "@/app/(menu)/_styles/coWorkerStyles";
 
 export default function CoWorkerActivityTab() {
   return (

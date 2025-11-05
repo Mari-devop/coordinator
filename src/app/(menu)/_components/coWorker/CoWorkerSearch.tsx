@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { coWorkerSearchStyles } from "../../_styles/coWorkerStyles";
+import Icon from "@/app/_components/icons/Icon";
+import { coWorkerSearchStyles } from "@/app/(menu)/_styles/coWorkerStyles";
 
 interface CoWorkerSearchProps {
   onSearch: (query: string) => void;
@@ -33,19 +34,10 @@ export default function CoWorkerSearch({
           <form onSubmit={handleSearch} className="relative">
             <div className={coWorkerSearchStyles.inputWrapper}>
               <div className={coWorkerSearchStyles.inputIcon}>
-                <svg
+                <Icon
+                  name="search"
                   className="h-5 w-5 text-[var(--textMuted)]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+                />
               </div>
               <input
                 type="text"
@@ -63,19 +55,10 @@ export default function CoWorkerSearch({
             onClick={onInviteClick}
             className={coWorkerSearchStyles.button}
           >
-            <svg
+            <Icon
+              name="plus"
               className={coWorkerSearchStyles.buttonIcon}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
+            />
             Invite Co-Worker
           </button>
         )}

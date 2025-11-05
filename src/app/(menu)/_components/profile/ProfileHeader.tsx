@@ -1,4 +1,4 @@
-import { profileHeaderStyles } from "../../_styles/profileStyles";
+import { profileHeaderStyles } from "@/app/(menu)/_styles/profileStyles";
 
 export default function ProfileHeader() {
   return (

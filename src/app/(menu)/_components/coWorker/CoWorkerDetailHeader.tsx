@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
-import { CoWorker } from "@/app/_types/profile";
+import { CoWorker } from "@/app/_types/coworker";
 import { getStatusColor, getInitials } from "@/app/_lib/co-worker.utils";
-import { coWorkerDetailStyles } from "../../_styles/coWorkerStyles";
+import Icon from "@/app/_components/icons/Icon";
+import { coWorkerDetailStyles } from "@/app/(menu)/_styles/coWorkerStyles";
 
 interface CoWorkerDetailHeaderProps {
   coWorker: CoWorker;
@@ -47,19 +48,10 @@ export default function CoWorkerDetailHeader({
         className={coWorkerDetailStyles.closeButton}
         title="Close"
       >
-        <svg
+        <Icon
+          name="close"
           className={coWorkerDetailStyles.closeIcon}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        />
       </button>
     </div>
   );

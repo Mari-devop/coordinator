@@ -1,5 +1,5 @@
-import AuthContainer from "../AuthContainer";
-import { skeletonStyles } from "../../../_styles/skeletonStyles";
+import AuthContainer from "@/app/(auth)/_components/_auth/AuthContainer";
+import { skeletonStyles } from "@/app/(auth)/_styles/skeletonStyles";
 
 export default function ForgotPasswordSkeleton() {
   const { auth, form } = skeletonStyles;

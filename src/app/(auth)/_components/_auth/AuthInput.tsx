@@ -1,6 +1,6 @@
 "use client";
 import { forwardRef } from "react";
-import { inputStyles } from "../../_styles/authStyles";
+import { inputStyles } from "@/app/(auth)/_styles/authStyles";
 
 interface AuthInputProps {
     id: string;

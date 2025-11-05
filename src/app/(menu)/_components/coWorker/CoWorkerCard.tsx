@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
-import { CoWorker } from "@/app/_types/profile";
+import { CoWorker } from "@/app/_types/coworker";
 import { getStatusColor, getInitials } from "@/app/_lib/co-worker.utils";
 import { cn } from "@/app/_lib/cn";
-import { coWorkerCardStyles } from "../../_styles/coWorkerStyles";
+import Icon from "@/app/_components/icons/Icon";
+import { coWorkerCardStyles } from "@/app/(menu)/_styles/coWorkerStyles";
 
 interface CoWorkerCardProps {
   coWorker: CoWorker;
@@ -48,19 +49,10 @@ export default function CoWorkerCard({ coWorker, onClick }: CoWorkerCardProps) {
         </div>
 
         <div className={coWorkerCardStyles.arrowContainer}>
-          <svg
+          <Icon
+            name="chevron-right"
             className={coWorkerCardStyles.arrowIcon}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+          />
         </div>
       </div>
     </div>

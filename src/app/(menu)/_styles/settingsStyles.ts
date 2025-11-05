@@ -31,6 +31,10 @@ export const toggleStyles = {
     container: "relative inline-flex items-center cursor-pointer",
     input: "sr-only peer",
     switch: "w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[var(--accentColor)]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--accentColor)]",
+    wrapper: "flex items-center justify-between",
+    content: "flex-1",
+    label: "text-base font-medium text-[var(--fontColor)] mb-1",
+    description: "text-sm text-[var(--textSecondary)]",
 } as const;
 
 export const selectStyles = {
@@ -89,17 +93,20 @@ export const googleAdsStyles = {
     header: "flex items-center mb-6",
     title: "text-2xl font-bold text-[var(--fontColor)] font-[var(--font-wix-madefor-display)] flex items-center",
     icon: "w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3",
+    iconStyle: "w-4 h-4 text-green-600",
     content: "space-y-4",
     emptyState: "text-center py-12 border-2 border-dashed border-gray-300 rounded-lg",
     emptyIcon: "w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4",
+    emptyIconStyle: "w-8 h-8 text-gray-400",
     emptyTitle: "text-lg font-medium text-[var(--fontColor)] mb-2",
     emptyDescription: "text-[var(--textSecondary)] mb-4",
     connectButton: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[var(--secondaryBackground)] hover:bg-[var(--accentColor)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accentColor)] transition-colors duration-200",
+    connectButtonIcon: "w-4 h-4 mr-2",
 } as const;
 
 export const saveButtonStyles = {
     container: "flex justify-end",
-    button: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[var(--secondaryBackground)] hover:bg-[var(--accentColor)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accentColor)] transition-colors duration-200",
+    button: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[var(--secondaryBackground)] hover:bg-[var(--accentColor)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accentColor)] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
     icon: "w-5 h-5 mr-2",
 } as const;
 

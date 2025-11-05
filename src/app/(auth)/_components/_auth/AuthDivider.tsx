@@ -1,5 +1,5 @@
 "use client";
-import { dividerStyles } from "../../_styles/authStyles";
+import { dividerStyles } from "@/app/(auth)/_styles/authStyles";
 
 export default function AuthDivider() {
   return (

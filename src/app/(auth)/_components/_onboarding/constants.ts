@@ -1,4 +1,4 @@
-import { Step } from "../../../../_types/onboardingTypes";
+import { Step } from "@/app/_types/onboardingTypes";
 
 export const steps: Step[] = [
   { 
