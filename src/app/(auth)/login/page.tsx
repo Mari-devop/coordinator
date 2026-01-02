@@ -1,33 +1,51 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginFormData } from "@/app/_lib/validations";
-import AuthContainer from "../_components/_auth/AuthContainer";
-import AuthHeader from "../_components/_auth/AuthHeader";
-import AuthForm from "../_components/_auth/AuthForm";
-import AuthInput from "../_components/_auth/AuthInput";
-import AuthButton from "../_components/_auth/AuthButton";
-import AuthFooter from "../_components/_auth/AuthFooter";
-import RememberMeSection from "../_components/_auth/RememberMeSection";
-import GoogleSignInButton from "../_components/_auth/GoogleSignInButton";
-import AuthDivider from "../_components/_auth/AuthDivider";
+import { loginSchema } from "@/app/_lib/validations";
+import { storage } from "@/app/_lib/storage";
+import { type LoginFormData } from "@/app/_types/auth";
 import RedirectIfAuthenticated from "@/app/_components/RedirectIfAuthenticated";
+import AuthTwoColumnLayout from "@/app/(auth)/_components/_auth/RegisterLayout";
+import LoginGoogleSection from "@/app/(auth)/_components/_auth/LoginGoogleSection";
+import AuthHeader from "@/app/(auth)/_components/_auth/AuthHeader";
+import AuthForm from "@/app/(auth)/_components/_auth/AuthForm";
+import AuthInput from "@/app/(auth)/_components/_auth/AuthInput";
+import AuthButton from "@/app/(auth)/_components/_auth/AuthButton";
+import AuthFooter from "@/app/(auth)/_components/_auth/AuthFooter";
+import RememberMeSection from "@/app/(auth)/_components/_auth/RememberMeSection";
+import { errorStyles, registerFormStyles } from "@/app/(auth)/_styles/authStyles";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+  });
+
   const {
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
+  } = form;
+
+  useEffect(() => {
+    const rememberedEmail = storage.getEmail();
+    if (rememberedEmail) {
+      setValue("email", rememberedEmail);
+      setValue("rememberMe", true);
+    }
+  }, [setValue]);
 
   const handleLoginError = (error: string) => {
     setError(error);
@@ -57,84 +75,99 @@ export default function LoginPage() {
         return handleLoginError("Invalid email or password");
       }
 
+      if (data.rememberMe) {
+        storage.saveEmail(data.email);
+      } else {
+        storage.clearEmail();
+      }
+
       await handleLoginSuccess();
-    } catch (error) {
+    } catch {
       handleLoginError("An error occurred. Please try again.");
     }
   };
 
   return (
     <RedirectIfAuthenticated>
-      <AuthContainer>
-        <AuthHeader
-          title="Welcome Back"
-          subtitle="Sign in to your account to continue"
-        />
-
-        <GoogleSignInButton />
-        
-        <AuthDivider />
-
-        <AuthForm onSubmit={handleSubmit(onSubmit)}>
-          {error && (
-            <div className="text-red-600 text-sm text-center mb-4">
-              {error}
-            </div>
-          )}
-
-          <div>
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <AuthInput
-                  id="email"
-                  label="Email Address"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={field.value || ""}
-                  onChange={field.onChange}
-                />
-              )}
+      <AuthTwoColumnLayout
+        leftContent={<LoginGoogleSection />}
+        rightContent={
+          <div className={registerFormStyles.container}>
+            <AuthHeader
+              title="Sign In"
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-            )}
-          </div>
 
-          <div>
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <AuthInput
-                  id="password"
-                  label="Password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={field.value || ""}
-                  onChange={field.onChange}
-                />
+            <AuthForm onSubmit={handleSubmit(onSubmit)}>
+              {error && (
+                <div className={errorStyles.message}>
+                  {error}
+                </div>
               )}
+
+              <div>
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <AuthInput
+                      id="email"
+                      label="Email Address"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={field.value || ""}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                {errors.email && (
+                  <p className={errorStyles.field}>{errors.email.message}</p>
+                )}
+              </div>
+
+              <div>
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <AuthInput
+                      id="password"
+                      label="Password"
+                      type="password"
+                      placeholder="Enter your password"
+                      value={field.value || ""}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                {errors.password && (
+                  <p className={errorStyles.field}>{errors.password.message}</p>
+                )}
+              </div>
+
+              <Controller
+                name="rememberMe"
+                control={control}
+                render={({ field }) => (
+                  <RememberMeSection
+                    checked={field.value || false}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
+
+              <AuthButton type="submit" disabled={isLoading}>
+                {isLoading ? "Signing In..." : "Sign In"}
+              </AuthButton>
+            </AuthForm>
+
+            <AuthFooter
+              text="Don't have an account?"
+              linkText="Sign up"
+              linkHref="/register"
             />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-            )}
           </div>
-
-          <RememberMeSection />
-
-          <AuthButton type="submit" disabled={isLoading}>
-            {isLoading ? "Signing In..." : "Sign In"}
-          </AuthButton>
-        </AuthForm>
-
-        <AuthFooter
-          text="Don't have an account?"
-          linkText="Sign up"
-          linkHref="/register"
-        />
-      </AuthContainer>
+        }
+      />
     </RedirectIfAuthenticated>
   );
 }

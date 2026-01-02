@@ -1,17 +1,17 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { OnboardingData } from "../../_types/onboardingTypes";
-import { steps } from "../_components/_onboarding/constants";
-import { 
-  ProgressHeader, 
-  StepContent, 
-  SummaryPanel, 
-  InviteSectionWrapper, 
-  NavigationButtons 
-} from "../_components/_onboarding/components";
-import { onboardingStyles } from "../_styles/onboardingStyles";
+import { onboardingApi } from "@/app/_lib/api/onboarding";
+import { OnboardingData } from "@/app/_types/onboardingTypes";
+import { steps } from "@/app/(auth)/_components/_onboarding/constants";
+import {
+  StepContent,
+  SummaryPanel,
+  InviteSectionWrapper,
+  NavigationButtons
+} from "@/app/(auth)/_components/_onboarding";
+import { onboardingStyles } from "@/app/(auth)/_styles/onboardingStyles";
 
 export default function OnboardingPage() {
   const { data: session, status } = useSession();
@@ -26,21 +26,80 @@ export default function OnboardingPage() {
     userType: "co-worker"
   });
   const [showInviteSection, setShowInviteSection] = useState(false);
-  const { container, card } = onboardingStyles;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [isChecking, setIsChecking] = useState(true);
+  const { container, card, error: errorStyles, loading, formContainer, summaryContainer } = onboardingStyles;
+
+  const isStepValid = useCallback((): boolean => {
+    switch (currentStep) {
+      case 1:
+        return !!(formData.firstName && formData.lastName && formData.mobile);
+      case 2:
+        return !!(formData.company && formData.role);
+      case 3:
+        return !!formData.userType;
+      case 4:
+        return true;
+      case 5:
+        return true;
+      default:
+        return false;
+    }
+  }, [formData, currentStep]);
+
+  const handleSubmit = async () => {
+    const stepValid = isStepValid();
+
+    if (!stepValid) {
+      setError("Please fill in all required fields");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      await onboardingApi.submitOnboarding(formData);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      window.location.href = "/dashboard";
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "An error occurred";
+      setError(errorMessage);
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
-    if (status === "loading") return; 
+    if (status === "loading") return;
 
     if (!session) {
       router.push("/login");
       return;
     }
+
+    const checkOnboardingStatus = async () => {
+      try {
+        const data = await onboardingApi.checkOnboardingStatus();
+
+        if (data.completed) {
+          router.push("/dashboard");
+          return;
+        }
+      } catch (error) {
+        console.error("Error checking onboarding status:", error);
+      } finally {
+        setIsChecking(false);
+      }
+    };
+
+    checkOnboardingStatus();
   }, [session, status, router]);
 
-  if (status === "loading") {
+  if (status === "loading" || isChecking) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[var(--accentColor)]"></div>
+      <div className={loading.container}>
+        <div className={loading.spinner}></div>
       </div>
     );
   }
@@ -56,6 +115,9 @@ export default function OnboardingPage() {
   const nextStep = () => {
     if (currentStep < steps.length) {
       setCurrentStep(currentStep + 1);
+      if (currentStep + 1 === steps.length) {
+        setShowInviteSection(false);
+      }
     }
   };
 
@@ -65,42 +127,29 @@ export default function OnboardingPage() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Onboarding completed:", formData);
-  };
-
-  const isStepValid = (): boolean => {
-    switch (currentStep) {
-      case 1:
-        return !!(formData.firstName && formData.lastName && formData.mobile);
-      case 2:
-        return !!(formData.company && formData.role);
-      case 3:
-        return !!formData.userType;
-      case 4:
-        return true;
-      case 5:
-        return true;
-      default:
-        return false;
-    }
-  };
-
   return (
     <div className={container.main}>
-      <ProgressHeader currentStep={currentStep} />
-
       <div className={container.content}>
-        {showInviteSection ? (
-          <InviteSectionWrapper 
+        {showInviteSection && currentStep < steps.length ? (
+          <InviteSectionWrapper
             formData={formData}
             onClose={() => setShowInviteSection(false)}
+            onPrevStep={prevStep}
+            onNextStep={nextStep}
+            currentStep={currentStep}
+            totalSteps={steps.length}
           />
         ) : (
-          <div className={container.grid}>
-            <div className="lg:col-span-2 flex flex-col">
-              <div className={card.mainFlex}>
-                <StepContent 
+          <div className={container.gridWithRows}>
+            <div className={formContainer.container}>
+              {error && (
+                <div className={errorStyles.container}>
+                  <p className={errorStyles.message}>{error}</p>
+                </div>
+              )}
+
+              <div className={`${card.mainFlex} ${currentStep === 3 ? 'w-full' : formContainer.card}`}>
+                <StepContent
                   currentStep={currentStep}
                   formData={formData}
                   onInputChange={(field: string | number | symbol, value: string) => handleInputChange(field as keyof OnboardingData, value)}
@@ -109,17 +158,22 @@ export default function OnboardingPage() {
                 />
               </div>
 
-              <NavigationButtons 
-                currentStep={currentStep}
-                totalSteps={steps.length}
-                isStepValid={isStepValid()}
-                onPrevStep={prevStep}
-                onNextStep={nextStep}
-                onSubmit={handleSubmit}
-              />
+              <div className={formContainer.buttonsContainer}>
+                <NavigationButtons
+                  currentStep={currentStep}
+                  totalSteps={steps.length}
+                  isStepValid={isStepValid()}
+                  onPrevStep={prevStep}
+                  onNextStep={nextStep}
+                  onSubmit={() => {
+                    return handleSubmit();
+                  }}
+                  isSubmitting={isSubmitting}
+                />
+              </div>
             </div>
 
-            <div className="lg:col-span-1">
+            <div className={summaryContainer.container}>
               <SummaryPanel formData={formData} />
             </div>
           </div>

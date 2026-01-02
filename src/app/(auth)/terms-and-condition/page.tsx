@@ -1,4 +1,4 @@
-import { legalPageStyles } from "../_styles/privacyPolicyStyles";
+import { legalPageStyles } from "@/app/(auth)/_styles/privacyPolicyStyles";
 
 export default function TermsAndConditionPage() {
     const { container, header, section, content, contact, footer } = legalPageStyles;

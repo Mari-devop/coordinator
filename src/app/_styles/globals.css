@@ -27,13 +27,13 @@
   --accentColor2: #E74C3C;
   --fontColor: #E5E7EB;
   
-  /* Additional Dark Theme Colors */
-  --cardBackground: #1A1F24;
-  --borderColor: #374151;
+  /* Additional Dark Theme Colors - с легким рыжеватым оттенком для форм */
+  --cardBackground: #1F1E1A;
+  --borderColor: #3A3428;
   --textSecondary: #9CA3AF;
   --textMuted: #6B7280;
-  --hoverBackground: #2D3748;
-  --shadowColor: rgba(0, 0, 0, 0.3);
+  --hoverBackground: #2A2620;
+  --shadowColor: rgba(0, 0, 0, 0.5);
 }
 
 @theme inline {
@@ -72,6 +72,92 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* gradient background for auth pages */
+.auth-gradient-background {
+  position: relative;
+  background: linear-gradient(135deg, 
+    var(--background) 0%, 
+    rgba(69, 123, 157, 0.05) 25%,
+    rgba(192, 108, 13, 0.03) 50%,
+    rgba(234, 172, 102, 0.04) 75%,
+    var(--background) 100%
+  );
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+}
+
+[data-theme="dark"] .auth-gradient-background {
+  background: linear-gradient(135deg, 
+    var(--background) 0%, 
+    rgba(45, 74, 93, 0.15) 25%,
+    rgba(230, 126, 34, 0.08) 50%,
+    rgba(243, 156, 18, 0.1) 75%,
+    var(--background) 100%
+  );
+  background-size: 200% 200%;
+}
+
+.auth-gradient-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(69, 123, 157, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(192, 108, 13, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(234, 172, 102, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="dark"] .auth-gradient-background::before {
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(45, 74, 93, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(230, 126, 34, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(243, 156, 18, 0.1) 0%, transparent 50%);
+}
+
+.auth-gradient-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle, rgba(69, 123, 157, 0.15) 1px, transparent 1px),
+    radial-gradient(circle, rgba(192, 108, 13, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px, 60px 60px;
+  background-position: 0 0, 20px 20px;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="dark"] .auth-gradient-background::after {
+  background-image: 
+    radial-gradient(circle, rgba(45, 74, 93, 0.3) 1px, transparent 1px),
+    radial-gradient(circle, rgba(230, 126, 34, 0.2) 1px, transparent 1px);
+  opacity: 0.5;
+}
+
+.auth-gradient-background > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+
 /* Animations */
 @keyframes fadeIn {
   from {
@@ -86,6 +172,41 @@ body {
 
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-out;
+}
+
+:root form div:has(> input[type="text"]:not([type="checkbox"])) > label[for],
+:root form div:has(> input[type="email"]) > label[for],
+:root form div:has(> input[type="password"]) > label[for],
+:root form label[for="email"],
+:root form label[for="password"],
+:root form label[for="confirmPassword"],
+:root form label[for="newPassword"],
+:root form label[for="confirmNewPassword"],
+:root form label[for]:not([for="terms"]):not([for="rememberMe"]) {
+  color: #888888 !important;
+}
+
+/* Exclude checkbox labels */
+:root form label[for="terms"],
+:root form label[for="rememberMe"],
+:root form input[type="checkbox"] + label {
+  color: inherit !important;
+}
+
+[data-theme="dark"] form label[for="email"],
+[data-theme="dark"] form label[for="password"],
+[data-theme="dark"] form label[for="confirmPassword"],
+[data-theme="dark"] form label[for="newPassword"],
+[data-theme="dark"] form label[for="confirmNewPassword"],
+[data-theme="dark"] form div > label[for]:not([for="terms"]):not([for="rememberMe"]) {
+  color: #E5E7EB !important;
+}
+
+/* Exclude checkbox labels in dark theme */
+[data-theme="dark"] form label[for="terms"],
+[data-theme="dark"] form label[for="rememberMe"],
+[data-theme="dark"] form input[type="checkbox"] + label {
+  color: inherit !important;
 }
 
 /* Mobile-specific fixes */
@@ -122,7 +243,6 @@ body {
     flex-direction: column;
     justify-content: center;
     padding: 1rem;
-    padding-bottom: 0;
   }
   
   /* Additional mobile fixes */

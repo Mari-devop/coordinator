@@ -1,4 +1,4 @@
-import { LoginSkeleton } from "../_components/_auth/skeletons";
+import { LoginSkeleton } from "@/app/(auth)/_components/_auth/skeletons";
 
 export default function LoginLoading() {
   return <LoginSkeleton />;

@@ -1,71 +1,57 @@
 "use client";
-import { useState } from "react";
-import ProfileHeader from "../_components/profile/ProfileHeader";
-import ProfileSummary from "../_components/profile/ProfileSummary";
-import PasswordChangeSection from "../_components/profile/PasswordChangeSection";
+import { useState, useEffect } from "react";
+import { profileApi, type ProfileData } from "@/app/_lib/api/profile";
+import { validateProfileField } from "@/app/_lib/validations";
+import { type ProfileFieldErrors } from "@/app/_types/profile";
+import { useToast } from "@/app/_contexts/ToastContext";
+import { profileStyles } from "@/app/(menu)/_styles/profileStyles";
+import ProfileHeader from "@/app/(menu)/_components/profile/ProfileHeader";
+import ProfileSummary from "@/app/(menu)/_components/profile/ProfileSummary";
+import PasswordChangeSection from "@/app/(menu)/_components/profile/PasswordChangeSection";
+
 
 export default function ProfilePage() {
+    const toast = useToast();
     const [isLoading, setIsLoading] = useState(false);
-    const [profileData, setProfileData] = useState({
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        mobile: "+1 (555) 123-4567",
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const [profileData, setProfileData] = useState<ProfileData>({
+        firstName: "",
+        lastName: "",
+        email: "",
+        mobile: "",
+        userType: null,
     });
 
-    const [errors, setErrors] = useState<{
-        firstName?: string;
-        lastName?: string;
-        email?: string;
-        mobile?: string;
-    }>({});
+    const [errors, setErrors] = useState<ProfileFieldErrors>({});
+
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            try {
+                setIsInitialLoading(true);
+                const data = await profileApi.getProfile();
+                setProfileData(data);
+            } catch {
+                toast.error("Failed to load profile data. Please refresh the page.");
+            } finally {
+                setIsInitialLoading(false);
+            }
+        };
+
+        fetchProfileData();
+    }, []);
 
     const validateField = (field: string, value: string) => {
+        const error = validateProfileField(field, value);
         const newErrors = { ...errors };
-
-        switch (field) {
-            case 'firstName':
-                if (!value.trim()) {
-                    newErrors.firstName = "First name is required";
-                } else if (value.trim().length < 2) {
-                    newErrors.firstName = "First name must be at least 2 characters";
-                } else {
-                    delete newErrors.firstName;
-                }
-                break;
-            case 'lastName':
-                if (!value.trim()) {
-                    newErrors.lastName = "Last name is required";
-                } else if (value.trim().length < 2) {
-                    newErrors.lastName = "Last name must be at least 2 characters";
-                } else {
-                    delete newErrors.lastName;
-                }
-                break;
-            case 'email':
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!value) {
-                    newErrors.email = "Email is required";
-                } else if (!emailRegex.test(value)) {
-                    newErrors.email = "Please enter a valid email address";
-                } else {
-                    delete newErrors.email;
-                }
-                break;
-            case 'mobile':
-                const mobileRegex = /^[\+]?[1-9][\d]{0,15}$/;
-                if (!value) {
-                    newErrors.mobile = "Mobile number is required";
-                } else if (!mobileRegex.test(value.replace(/[\s\-\(\)]/g, ''))) {
-                    newErrors.mobile = "Please enter a valid mobile number";
-                } else {
-                    delete newErrors.mobile;
-                }
-                break;
+        
+        if (error) {
+            newErrors[field as keyof ProfileFieldErrors] = error;
+        } else {
+            delete newErrors[field as keyof ProfileFieldErrors];
         }
-
+        
         setErrors(newErrors);
-        return !newErrors[field as keyof typeof newErrors];
+        return !error;
     };
 
     const handleFieldUpdate = async (field: string, value: string) => {
@@ -76,46 +62,50 @@ export default function ProfilePage() {
         setIsLoading(true);
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            setProfileData(prev => ({
-                ...prev,
-                [field]: value,
-            }));
-
-            console.log(`Updated ${field}:`, value);
-            
-            alert(`${field.charAt(0).toUpperCase() + field.slice(1)} updated successfully!`);
-
+            const updatedData = await profileApi.updateProfile(field, value);
+            setProfileData(updatedData);
+            toast.success(`${field.charAt(0).toUpperCase() + field.slice(1)} updated successfully!`);
         } catch (error) {
             console.error(`Error updating ${field}:`, error);
-            alert(`Failed to update ${field}. Please try again.`);
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            toast.error(`Failed to update ${field}: ${errorMessage}`);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handlePasswordChange = async () => {
+    const handlePasswordChange = async (currentPassword: string, newPassword: string) => {
         setIsLoading(true);
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            console.log("Password changed successfully");
-            alert("Password updated successfully!");
-
+            await profileApi.changePassword(currentPassword, newPassword);
+            toast.success("Password updated successfully!");
         } catch (error) {
             console.error("Error changing password:", error);
-            alert("Failed to update password. Please try again.");
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            toast.error(`Failed to update password: ${errorMessage}`);
         } finally {
             setIsLoading(false);
         }
     };
 
+    const { loading, container } = profileStyles;
+
+    if (isInitialLoading) {
+        return (
+            <div className={loading.container}>
+                <div className={loading.loadingWrapper}>
+                    <div className={loading.loadingContent}>
+                        <div className={loading.spinner}></div>
+                        <p className={loading.text}>Loading profile data...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="max-w-4xl mx-auto p-6 space-y-8">
+        <div className={container.container}>
             <ProfileHeader />
             
             <ProfileSummary

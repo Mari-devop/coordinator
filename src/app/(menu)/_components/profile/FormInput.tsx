@@ -1,5 +1,5 @@
 "use client";
-import { sharedInputStyles } from "../../_styles/sharedStyles";
+import { sharedInputStyles } from "@/app/(menu)/_styles/sharedStyles";
 
 interface FormInputProps {
     id: string;

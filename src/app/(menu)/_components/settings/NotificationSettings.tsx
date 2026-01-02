@@ -1,6 +1,6 @@
 "use client";
-import ToggleSwitch from "../shared/ToggleSwitch";
-import { notificationStyles } from "../../_styles/settingsStyles";
+import ToggleSwitch from "@/app/(menu)/_components/shared/ToggleSwitch";
+import { notificationStyles } from "@/app/(menu)/_styles/settingsStyles";
 
 interface NotificationSettingsProps {
   emailNotifications: boolean;

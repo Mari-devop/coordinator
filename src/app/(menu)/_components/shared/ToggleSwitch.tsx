@@ -1,5 +1,5 @@
 "use client";
-import { toggleStyles } from "../../_styles/settingsStyles";
+import { toggleStyles } from "@/app/(menu)/_styles/settingsStyles";
 
 interface ToggleSwitchProps {
   checked: boolean;
@@ -19,13 +19,13 @@ export default function ToggleSwitch({
   className = "",
 }: ToggleSwitchProps) {
   return (
-    <div className={`${className}`}>
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <h4 className="text-base font-medium text-[var(--fontColor)] mb-1">
+    <div className={className}>
+      <div className={toggleStyles.wrapper}>
+        <div className={toggleStyles.content}>
+          <h4 className={toggleStyles.label}>
             {label}
           </h4>
-          <p className="text-sm text-[var(--textSecondary)]">{description}</p>
+          <p className={toggleStyles.description}>{description}</p>
         </div>
         <label className={toggleStyles.container}>
           <input

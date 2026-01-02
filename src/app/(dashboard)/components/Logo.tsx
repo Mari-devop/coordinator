@@ -1,11 +1,12 @@
 import Link from "next/link";
+import { logoStyles } from "../_styles/logoStyles";
 
 export default function Logo() {
   return (
-    <div className="flex items-center">
+    <div className={logoStyles.container}>
       <Link 
         href="/dashboard" 
-        className="text-2xl font-bold text-[var(--secondaryBackground)] font-[var(--font-wix-madefor-display)] uppercase border border-[var(--secondaryBackground)] rounded-md px-3 py-1 hover:bg-[var(--secondaryBackground)] hover:text-white transition-colors duration-200"
+        className={logoStyles.link}
       >
         Coordinator
       </Link>

@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import { CoWorker } from "@/app/_types/profile";
+import { CoWorker } from "@/app/_types/coworker";
 import CoWorkerDetailHeader from "./CoWorkerDetailHeader";
 import CoWorkerDetailTabs from "./CoWorkerDetailTabs";
 import CoWorkerOverviewTab from "./CoWorkerOverviewTab";
 import CoWorkerReportsTab from "./CoWorkerReportsTab";
 import CoWorkerActivityTab from "./CoWorkerActivityTab";
 import CoWorkerDetailActions from "./CoWorkerDetailActions";
-import { coWorkerDetailStyles } from "../../_styles/coWorkerStyles";
+import { coWorkerDetailStyles } from "@/app/(menu)/_styles/coWorkerStyles";
 
 interface CoWorkerDetailViewProps {
   coWorker: CoWorker | null;

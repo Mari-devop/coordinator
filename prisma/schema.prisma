@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -15,5 +15,60 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Onboarding data
+  firstName String?
+  lastName  String?
+  mobile    String?
+  company   String?
+  role      String?
+  userType  String?  // "co-worker" | "manager"
+
+  // Password reset
+  resetToken       String?
+  resetTokenExpiry DateTime?
+
+  // Settings
+  emailNotifications Boolean @default(true)
+  managerMode        Boolean @default(false)
+
+  // Invitations sent by this user
+  sentInvitations Invitation[] @relation("Inviter")
+
+  // Team relationships
+  managedTeams TeamMember[] @relation("Manager")
+  teamMemberships TeamMember[] @relation("CoWorker")
+
   @@map("users")
+}
+
+model Invitation {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  inviterId String
+  inviter   User     @relation("Inviter", fields: [inviterId], references: [id], onDelete: Cascade)
+  status    String   @default("pending") // "pending" | "accepted" | "expired"
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([token])
+  @@index([inviterId])
+  @@map("invitations")
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  managerId String
+  manager   User     @relation("Manager", fields: [managerId], references: [id], onDelete: Cascade)
+  coWorkerId String
+  coWorker   User     @relation("CoWorker", fields: [coWorkerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([managerId, coWorkerId])
+  @@index([managerId])
+  @@index([coWorkerId])
+  @@map("team_members")
 }

@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { authGuardStyles } from "@/app/_styles/authGuardStyles";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -23,8 +24,8 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
 
   if (status === "loading") {
     return fallback || (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[var(--accentColor)]"></div>
+      <div className={authGuardStyles.loadingContainer}>
+        <div className={authGuardStyles.spinner}></div>
       </div>
     );
   }

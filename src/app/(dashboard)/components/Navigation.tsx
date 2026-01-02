@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { navigationStyles } from "../_styles/navigationStyles";
 
 interface NavigationProps {
   isMobile?: boolean;
@@ -17,20 +18,20 @@ export default function Navigation({ isMobile = false }: NavigationProps) {
   ];
 
   const baseClasses = isMobile 
-    ? "block px-3 py-2 rounded-md text-base font-medium"
-    : "px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200";
+    ? navigationStyles.base.mobile
+    : navigationStyles.base.desktop;
 
   const getActiveClasses = (href: string) => {
     const isActive = pathname === href;
     return isActive 
-      ? "bg-[var(--secondaryBackground)] text-white" 
-      : "text-gray-700 hover:text-[var(--accentColor)] hover:bg-gray-50";
+      ? navigationStyles.active
+      : navigationStyles.inactive;
   };
 
   if (isMobile) {
     return (
-      <div className="md:hidden border-t border-gray-200">
-        <div className="px-2 pt-2 pb-3 space-y-1">
+      <div className={navigationStyles.mobileContainer}>
+        <div className={navigationStyles.mobileContent}>
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -46,7 +47,7 @@ export default function Navigation({ isMobile = false }: NavigationProps) {
   }
 
   return (
-    <nav className="hidden md:flex items-center space-x-8">
+    <nav className={navigationStyles.desktop}>
       {navItems.map((item) => (
         <Link
           key={item.href}

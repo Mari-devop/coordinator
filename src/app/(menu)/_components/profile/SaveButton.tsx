@@ -1,5 +1,6 @@
 "use client";
-import { sharedButtonStyles } from "../../_styles/sharedStyles";
+import { sharedButtonStyles } from "@/app/(menu)/_styles/sharedStyles";
+import { profileStyles } from "@/app/(menu)/_styles/profileStyles";
 
 interface SaveButtonProps {
   onSave?: () => void;
@@ -10,12 +11,14 @@ export default function SaveButton({
   onSave,
   disabled = false,
 }: SaveButtonProps) {
+  const { saveButton } = profileStyles;
+
   return (
-    <div className="flex justify-end pt-6 border-t border-[var(--borderColor)]">
+    <div className={saveButton.container}>
       <button
         onClick={onSave}
         disabled={disabled}
-        className={`px-6 py-3 font-medium rounded-lg ${sharedButtonStyles.primary} disabled:opacity-50 disabled:cursor-not-allowed`}
+        className={`${sharedButtonStyles.primary} ${saveButton.button}`}
       >
         Save Settings
       </button>

@@ -1,5 +1,8 @@
 import Link from "next/link";
 import AuthGuard from "@/app/_components/AuthGuard";
+import ProfileDropdown from "@/app/(dashboard)/components/ProfileDropdown";
+import ThemeToggle from "@/app/(auth)/_components/_auth/ThemeToggle";
+import { menuLayoutStyles } from "./_styles/layoutStyles";
 
 export default function MenuLayout({
   children,
@@ -8,17 +11,21 @@ export default function MenuLayout({
 }) {
   return (
     <AuthGuard>
-      <div>
-        <header>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center">
+      <div className={menuLayoutStyles.container}>
+        <header className={menuLayoutStyles.header.header}>
+          <div className={menuLayoutStyles.header.container}>
+            <div className={menuLayoutStyles.header.content}>
+              <div className={menuLayoutStyles.header.logoContainer}>
                 <Link
-                  href="/login"
-                  className="text-2xl font-bold text-[var(--secondaryBackground)] font-[var(--font-wix-madefor-display)] uppercase border border-[var(--secondaryBackground)] rounded-md px-2 py-1"
+                  href="/dashboard"
+                  className={menuLayoutStyles.header.logo}
                 >
                   Coordinator
                 </Link>
+              </div>
+              <div className={menuLayoutStyles.header.actions}>
+                <ThemeToggle />
+                <ProfileDropdown />
               </div>
             </div>
           </div>

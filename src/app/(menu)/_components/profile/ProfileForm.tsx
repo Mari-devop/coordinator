@@ -1,35 +1,16 @@
 "use client";
 import FormInput from "./FormInput";
+import Icon from "@/app/_components/icons/Icon";
+import { ProfileFormProps } from "@/app/_types/profile";
 import {
   profileSectionStyles,
   profileFormStyles,
-} from "../../_styles/profileStyles";
+  profileStyles,
+} from "@/app/(menu)/_styles/profileStyles";
 import {
   sharedButtonStyles,
   sharedFormStyles,
-} from "../../_styles/sharedStyles";
-
-interface ProfileFormProps {
-  formData: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobile: string;
-    password: string;
-    confirmPassword: string;
-  };
-  errors: {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    mobile?: string;
-    password?: string;
-    confirmPassword?: string;
-  };
-  onInputChange: (field: string, value: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  isLoading?: boolean;
-}
+} from "@/app/(menu)/_styles/sharedStyles";
 
 export default function ProfileForm({
   formData,
@@ -38,21 +19,18 @@ export default function ProfileForm({
   onSubmit,
   isLoading = false,
 }: ProfileFormProps) {
+  const { formSection } = profileStyles;
+
   return (
     <section className={profileSectionStyles.container}>
-      <h2 className={`${profileSectionStyles.title} mb-6 flex items-center`}>
-        <span className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-          <svg
-            className="w-4 h-4 text-blue-600"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clipRule="evenodd"
-            />
-          </svg>
+      <h2 className={formSection.title}>
+        <span className={formSection.titleIconContainer}>
+          <Icon
+            name="user"
+            className={formSection.titleIcon}
+            width={16}
+            height={16}
+          />
         </span>
         Personal Information
       </h2>
@@ -104,8 +82,8 @@ export default function ProfileForm({
           />
         </div>
 
-        <div className="border-t border-[var(--borderColor)] pt-6">
-          <h3 className="text-lg font-semibold text-[var(--fontColor)] mb-4">
+        <div className={formSection.passwordSection}>
+          <h3 className={formSection.passwordTitle}>
             Change Password
           </h3>
           <div className={profileFormStyles.fieldGroup}>
@@ -130,34 +108,20 @@ export default function ProfileForm({
           </div>
         </div>
 
-        <div className="flex justify-end pt-6 border-t border-[var(--borderColor)]">
+        <div className={formSection.actions}>
           <button
             type="submit"
             disabled={isLoading}
-            className={`px-6 py-3 font-medium rounded-lg ${sharedButtonStyles.primary} disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`${sharedButtonStyles.primary} ${formSection.submitButton}`}
           >
             {isLoading ? (
-              <div className="flex items-center">
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
+              <div className={formSection.loadingWrapper}>
+                <Icon
+                  name="spinner"
+                  className={formSection.spinner}
+                  width={20}
+                  height={20}
+                />
                 Updating...
               </div>
             ) : (

@@ -1,6 +1,11 @@
 "use client";
-import Link from "next/link";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import Icon from "@/app/_components/icons/Icon";
+import { settingsApi } from "@/app/_lib/api/settings";
+import { profileDropdownStyles } from "../_styles/profileDropdownStyles";
 
 interface ProfileDropdownProps {
   userName?: string;
@@ -8,72 +13,192 @@ interface ProfileDropdownProps {
 
 export default function ProfileDropdown({ userName }: ProfileDropdownProps) {
   const { data: session } = useSession();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [managerMode, setManagerMode] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
   const displayName = userName || session?.user?.name || session?.user?.email || "User";
   
-  const handleSignOut = () => {
-    signOut({ callbackUrl: "/login" });
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settings = await settingsApi.getSettings();
+        setManagerMode(Boolean(settings.managerMode));
+      } catch (error) {
+        console.error("Failed to load settings:", error);
+        setManagerMode(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settings = await settingsApi.getSettings();
+        setManagerMode(settings.managerMode);
+      } catch (error) {
+        console.error("Failed to reload settings:", error);
+      }
+    };
+    loadSettings();
+  }, [pathname]);
+
+  const handleSignOut = async () => {
+    setIsOpen(false);
+    await signOut({ callbackUrl: "/login", redirect: true });
   };
+
+  const handleToggleDropdown = async () => {
+    if (!isOpen) {
+      try {
+        const settings = await settingsApi.getSettings();
+        setManagerMode(Boolean(settings.managerMode));
+      } catch (error) {
+        console.error("Failed to reload settings:", error);
+      }
+    }
+    setIsOpen(prev => !prev);
+  };
+
+
+  const handleMenuItemClick = useCallback((href: string) => {
+    router.push(href);
+    setIsOpen(false);
+  }, [router]);
+
+  useEffect(() => {
+    if (isOpen && buttonRef.current && dropdownRef.current) {
+      const updatePosition = () => {
+        if (buttonRef.current && dropdownRef.current) {
+          const buttonRect = buttonRef.current.getBoundingClientRect();
+          dropdownRef.current.style.top = `${buttonRect.bottom + 8}px`;
+          dropdownRef.current.style.right = `${window.innerWidth - buttonRect.right}px`;
+        }
+      };
+
+      updatePosition();
+      window.addEventListener('resize', updatePosition);
+      window.addEventListener('scroll', updatePosition, true);
+
+      return () => {
+        window.removeEventListener('resize', updatePosition);
+        window.removeEventListener('scroll', updatePosition, true);
+      };
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        dropdownRef.current &&
+        buttonRef.current &&
+        !dropdownRef.current.contains(target) &&
+        !buttonRef.current.contains(target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const menuItems = useMemo(() => {
+    return [
+      ...(managerMode ? [{ href: "/co-workers", label: "Co-Workers" }] : []),
+      { href: "/profile", label: "Profile" },
+      { href: "/settings", label: "Settings" },
+    ];
+  }, [managerMode]);
+
+  const isActive = (href: string) => pathname === href;
+  const styles = profileDropdownStyles;
+
   return (
-    <div className="flex items-center">
-      <div className="relative group">
-        <button className="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-50 transition-colors duration-200">
-          <div className="w-8 h-8 bg-gradient-to-br from-[var(--secondaryBackground)] to-[var(--accentColor)] rounded-full flex items-center justify-center">
-            <svg 
-              className="w-5 h-5 text-white" 
-              fill="currentColor" 
-              viewBox="0 0 20 20"
-            >
-              <path 
-                fillRule="evenodd" 
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" 
-                clipRule="evenodd" 
-              />
-            </svg>
+    <div className={styles.container}>
+      <div className={styles.wrapper}>
+        <button 
+          ref={buttonRef}
+          onClick={handleToggleDropdown}
+          className={styles.button}
+        >
+          <div className={styles.avatar}>
+            <Icon 
+              name="user"
+              className={styles.avatarIcon} 
+              width={20}
+              height={20}
+            />
           </div>
           
-          <span className="hidden sm:block text-sm font-medium text-gray-700">
+          <span className={styles.displayName}>
             {displayName}
           </span>
           
-          <svg 
-            className="w-4 h-4 text-gray-400" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M19 9l-7 7-7-7" 
-            />
-          </svg>
+          <Icon 
+            name="chevron-down"
+            className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}
+            width={16}
+            height={16}
+          />
         </button>
 
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-          <div className="py-1">
-            <Link 
-              href="/dashboard/profile" 
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[var(--accentColor)] transition-colors duration-200"
-            >
-              View Profile
-            </Link>
-            <Link 
-              href="/dashboard/settings" 
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[var(--accentColor)] transition-colors duration-200"
-            >
-              Settings
-            </Link>
-            <div className="border-t border-gray-100"></div>
-            <button 
-              onClick={handleSignOut}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[var(--accentColor2)] transition-colors duration-200"
-            >
-              Sign out
-            </button>
-          </div>
-        </div>
+        {isOpen && mounted && createPortal(
+          <div 
+            ref={dropdownRef}
+            className={styles.dropdown} 
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <div className={styles.menu}>
+              {menuItems.map((item) => (
+                <button
+                  key={item.href}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleMenuItemClick(item.href);
+                  }}
+                  className={`${styles.menuItem} ${
+                    isActive(item.href)
+                      ? styles.menuItemActive
+                      : styles.menuItemInactive
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+              <div className={styles.divider}></div>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSignOut();
+                }}
+                className={styles.signOutButton}
+              >
+                Sign out
+              </button>
+            </div>
+          </div>,
+          document.body
+        )}
       </div>
     </div>
   );

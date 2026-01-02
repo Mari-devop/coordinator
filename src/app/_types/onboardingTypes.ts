@@ -1,3 +1,6 @@
+import { z } from "zod";
+import { onboardingSchema } from "@/app/_lib/validations";
+
 export interface OnboardingData {
   firstName: string;
   lastName: string;
@@ -6,6 +9,8 @@ export interface OnboardingData {
   role: string;
   userType: "co-worker" | "manager";
 }
+
+export type OnboardingFormData = z.infer<typeof onboardingSchema>;
 
 export interface Step {
   id: number;

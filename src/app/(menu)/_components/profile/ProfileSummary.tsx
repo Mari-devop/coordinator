@@ -1,39 +1,32 @@
 "use client";
 import EditableField from "./EditableField";
-
-interface ProfileSummaryProps {
-    profileData: {
-        firstName: string;
-        lastName: string;
-        email: string;
-        mobile: string;
-    };
-    onFieldUpdate: (field: string, value: string) => void;
-    errors: {
-        firstName?: string;
-        lastName?: string;
-        email?: string;
-        mobile?: string;
-    };
-}
+import ReadOnlyField from "./ReadOnlyField";
+import Icon from "@/app/_components/icons/Icon";
+import { ProfileSummaryProps } from "@/app/_types/profile";
+import { profileStyles } from "@/app/(menu)/_styles/profileStyles";
 
 export default function ProfileSummary({
     profileData,
     onFieldUpdate,
     errors
 }: ProfileSummaryProps) {
+    const { summary } = profileStyles;
+
     return (
-        <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-2xl font-bold text-[var(--fontColor)] font-[var(--font-wix-madefor-display)] mb-6 flex items-center">
-                <span className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                    <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                    </svg>
+        <section className={summary.container}>
+            <h2 className={summary.title}>
+                <span className={summary.titleIconContainer}>
+                    <Icon
+                        name="user"
+                        className={summary.titleIcon}
+                        width={16}
+                        height={16}
+                    />
                 </span>
                 Personal Information
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className={summary.fieldsGrid}>
                 <EditableField
                     label="First Name"
                     value={profileData.firstName}
@@ -63,6 +56,10 @@ export default function ProfileSummary({
                     onSave={(value) => onFieldUpdate('mobile', value)}
                     required
                     error={errors.mobile}
+                />
+                <ReadOnlyField
+                    label="Role"
+                    value={profileData.userType}
                 />
             </div>
         </section>

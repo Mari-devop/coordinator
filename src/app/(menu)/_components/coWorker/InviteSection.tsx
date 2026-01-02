@@ -1,6 +1,9 @@
 "use client";
 import { useState } from "react";
-import { coWorkerInviteStyles } from "../../_styles/coWorkerStyles";
+import Icon from "@/app/_components/icons/Icon";
+import { coWorkerInviteStyles } from "@/app/(menu)/_styles/coWorkerStyles";
+import { invitationsApi } from "@/app/_lib/api/invitations";
+import { useToast } from "@/app/_contexts/ToastContext";
 
 interface InviteSectionProps {
   isOpen: boolean;
@@ -8,19 +11,37 @@ interface InviteSectionProps {
 }
 
 export default function InviteSection({ isOpen, onClose }: InviteSectionProps) {
-  const [copied, setCopied] = useState(false);
-  const inviteLink =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/invite/co-worker`
-      : "";
+  const toast = useToast();
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const copyToClipboard = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+    setIsSubmitting(true);
+
     try {
-      await navigator.clipboard.writeText(inviteLink);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      const response = await invitationsApi.sendInvite(email);
+      if (response.action === "added") {
+        setSuccess(`User ${email} has been added to your team!`);
+        toast.success(`User ${email} has been added to your team!`);
+      } else {
+        setSuccess(`Invitation sent successfully to ${email}!`);
+        toast.success(`Invitation sent successfully to ${email}!`);
+      }
+      setEmail("");
+      setTimeout(() => {
+        onClose();
+      }, 2000);
     } catch (err) {
-      console.error("Failed to copy: ", err);
+      const errorMessage = err instanceof Error ? err.message : "Failed to send invitation";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -31,99 +52,68 @@ export default function InviteSection({ isOpen, onClose }: InviteSectionProps) {
       <div className={coWorkerInviteStyles.header}>
         <h3 className={coWorkerInviteStyles.title}>Invite Co-Worker</h3>
         <button onClick={onClose} className={coWorkerInviteStyles.closeButton}>
-          <svg
+          <Icon
+            name="close"
             className={coWorkerInviteStyles.closeIcon}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          />
         </button>
       </div>
 
       <div className={coWorkerInviteStyles.content}>
         <p className={coWorkerInviteStyles.description}>
-          Share this link with your co-worker to invite them to join your team:
+          Enter your co-worker&apos;s email address to invite them to join your team:
         </p>
 
-        <div className={coWorkerInviteStyles.inputContainer}>
-          <input
-            type="text"
-            value={inviteLink}
-            readOnly
-            className={coWorkerInviteStyles.input}
-          />
+        <form onSubmit={handleSubmit} className={coWorkerInviteStyles.form}>
+          <div>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="colleague@example.com"
+              className={coWorkerInviteStyles.input}
+              required
+              disabled={isSubmitting}
+            />
+          </div>
+
           <button
-            onClick={copyToClipboard}
-            className={`${coWorkerInviteStyles.copyButton} ${
-              copied
-                ? coWorkerInviteStyles.copyButtonSuccess
-                : coWorkerInviteStyles.copyButtonDefault
+            type="submit"
+            disabled={isSubmitting || !email}
+            className={`${coWorkerInviteStyles.submitButton} ${
+              isSubmitting || !email ? coWorkerInviteStyles.submitButtonDisabled : ""
             }`}
           >
-            {copied ? (
-              <>
-                <svg
-                  className={coWorkerInviteStyles.copyIcon}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Copied!
-              </>
-            ) : (
-              <>
-                <svg
-                  className={coWorkerInviteStyles.copyIcon}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-                Copy
-              </>
-            )}
+            {isSubmitting ? "Sending..." : "Send Invitation"}
           </button>
-        </div>
+
+          {success && (
+            <div className={coWorkerInviteStyles.successMessage}>
+              {success}
+            </div>
+          )}
+
+          {error && (
+            <div className={coWorkerInviteStyles.errorMessage}>
+              {error}
+            </div>
+          )}
+        </form>
 
         <div className={coWorkerInviteStyles.infoBox}>
           <div className={coWorkerInviteStyles.infoContent}>
             <div className="flex-shrink-0">
-              <svg
+              <Icon
+                name="info"
                 className={coWorkerInviteStyles.infoIcon}
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
+                width={20}
+                height={20}
+              />
             </div>
             <div className={coWorkerInviteStyles.infoText}>
               <p>
-                Your co-worker will be able to join your team and you&apos;ll be
-                able to see their reports and collaborate.
+                If the user already has an account, they will be added to your team immediately. 
+                If not, they will receive an invitation email to join.
               </p>
             </div>
           </div>
