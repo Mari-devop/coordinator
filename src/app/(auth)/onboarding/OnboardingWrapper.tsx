@@ -85,6 +85,10 @@ export default function OnboardingWrapper() {
           <InviteSectionWrapper 
             formData={formData}
             onClose={() => setShowInviteSection(false)}
+            onPrevStep={prevStep}
+            onNextStep={nextStep}
+            currentStep={currentStep}
+            totalSteps={steps.length}
           />
         ) : (
           <div className={container.grid}>

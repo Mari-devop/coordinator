@@ -19,6 +19,7 @@ export default function ProfilePage() {
         lastName: "",
         email: "",
         mobile: "",
+        userType: null,
     });
 
     const [errors, setErrors] = useState<ProfileFieldErrors>({});

@@ -10,3 +10,7 @@ export { default as RememberMeSection } from './RememberMeSection';
 export { default as TermsCheckbox } from './TermsCheckbox';
 export { default as GoogleSignInButton } from './GoogleSignInButton';
 export { default as AuthDivider } from './AuthDivider';
+export { default as ThemeToggle } from './ThemeToggle';
+export { default as RegisterLayout } from './RegisterLayout';
+export { default as GoogleSignInSection } from './GoogleSignInSection';
+export { default as LoginGoogleSection } from './LoginGoogleSection';

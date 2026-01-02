@@ -1,5 +1,6 @@
 "use client";
 import EditableField from "./EditableField";
+import ReadOnlyField from "./ReadOnlyField";
 import Icon from "@/app/_components/icons/Icon";
 import { ProfileSummaryProps } from "@/app/_types/profile";
 import { profileStyles } from "@/app/(menu)/_styles/profileStyles";
@@ -55,6 +56,10 @@ export default function ProfileSummary({
                     onSave={(value) => onFieldUpdate('mobile', value)}
                     required
                     error={errors.mobile}
+                />
+                <ReadOnlyField
+                    label="Role"
+                    value={profileData.userType}
                 />
             </div>
         </section>

@@ -89,3 +89,50 @@ export const authLayoutStyles = {
     animation: animationStyles,
     theme: themeStyles,
 } as const;
+
+export const getAuthLayoutStyles = (pathname: string | null) => {
+    const isContentPage = pathname?.includes("/privacy-policy") || pathname?.includes("/terms-and-condition");
+    const isOnboardingPage = pathname?.includes("/onboarding");
+    const isRegisterPage = pathname?.includes("/register");
+    const isLoginPage = pathname?.includes("/login");
+    const isForgotPasswordPage = pathname?.includes("/forgot-password");
+    const isAuthTwoColumnPage = isRegisterPage || isLoginPage;
+    const isAuthPageWithoutTopPadding = isAuthTwoColumnPage || isForgotPasswordPage;
+
+    const containerWidth = isOnboardingPage 
+        ? "" 
+        : isContentPage 
+        ? layoutStyles.containerWidth.content 
+        : isAuthTwoColumnPage
+        ? "max-w-7xl"
+        : layoutStyles.containerWidth.form;
+
+    const mainClasses = [
+        layoutStyles.main.container,
+        isAuthPageWithoutTopPadding && '!pt-0 !pb-4 px-0 min-h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] lg:!pb-0',
+        isOnboardingPage && '!pt-0 !pb-0 px-0 h-[calc(100vh-4rem)]'
+    ].filter(Boolean).join(' ').trim();
+        
+    const contentClasses = [
+        layoutStyles.main.content,
+        containerWidth,
+        isOnboardingPage && '!p-0 h-full',
+        isAuthTwoColumnPage && 'h-full flex items-center',
+        isForgotPasswordPage && 'flex items-center justify-center w-full py-4'
+    ].filter(Boolean).join(' ').trim();
+
+    const headerClasses = [
+        isOnboardingPage && 'sticky top-0 z-50'
+    ].filter(Boolean).join(' ').trim();
+
+    return {
+        mainClasses,
+        contentClasses,
+        headerClasses,
+        isOnboardingPage
+    };
+};
+
+export const logoutButtonStyles = {
+    button: "px-4 py-2 text-sm font-medium text-[var(--fontColor)] bg-[var(--cardBackground)] border border-[var(--borderColor)] rounded-md shadow-sm hover:bg-[var(--hoverBackground)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accentColor)] transition-colors duration-200 cursor-pointer"
+} as const;

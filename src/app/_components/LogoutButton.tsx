@@ -10,6 +10,7 @@ const publicRoutes = [
   "/forgot-password",
   "/privacy-policy",
   "/terms-and-condition",
+  "/onboarding",
 ];
 
 export default function LogoutButton() {

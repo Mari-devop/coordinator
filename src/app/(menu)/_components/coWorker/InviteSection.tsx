@@ -2,6 +2,8 @@
 import { useState } from "react";
 import Icon from "@/app/_components/icons/Icon";
 import { coWorkerInviteStyles } from "@/app/(menu)/_styles/coWorkerStyles";
+import { invitationsApi } from "@/app/_lib/api/invitations";
+import { useToast } from "@/app/_contexts/ToastContext";
 
 interface InviteSectionProps {
   isOpen: boolean;
@@ -9,19 +11,37 @@ interface InviteSectionProps {
 }
 
 export default function InviteSection({ isOpen, onClose }: InviteSectionProps) {
-  const [copied, setCopied] = useState(false);
-  const inviteLink =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/invite/co-worker`
-      : "";
+  const toast = useToast();
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const copyToClipboard = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+    setIsSubmitting(true);
+
     try {
-      await navigator.clipboard.writeText(inviteLink);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      const response = await invitationsApi.sendInvite(email);
+      if (response.action === "added") {
+        setSuccess(`User ${email} has been added to your team!`);
+        toast.success(`User ${email} has been added to your team!`);
+      } else {
+        setSuccess(`Invitation sent successfully to ${email}!`);
+        toast.success(`Invitation sent successfully to ${email}!`);
+      }
+      setEmail("");
+      setTimeout(() => {
+        onClose();
+      }, 2000);
     } catch (err) {
-      console.error("Failed to copy: ", err);
+      const errorMessage = err instanceof Error ? err.message : "Failed to send invitation";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -41,43 +61,44 @@ export default function InviteSection({ isOpen, onClose }: InviteSectionProps) {
 
       <div className={coWorkerInviteStyles.content}>
         <p className={coWorkerInviteStyles.description}>
-          Share this link with your co-worker to invite them to join your team:
+          Enter your co-worker&apos;s email address to invite them to join your team:
         </p>
 
-        <div className={coWorkerInviteStyles.inputContainer}>
-          <input
-            type="text"
-            value={inviteLink}
-            readOnly
-            className={coWorkerInviteStyles.input}
-          />
+        <form onSubmit={handleSubmit} className={coWorkerInviteStyles.form}>
+          <div>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="colleague@example.com"
+              className={coWorkerInviteStyles.input}
+              required
+              disabled={isSubmitting}
+            />
+          </div>
+
           <button
-            onClick={copyToClipboard}
-            className={`${coWorkerInviteStyles.copyButton} ${
-              copied
-                ? coWorkerInviteStyles.copyButtonSuccess
-                : coWorkerInviteStyles.copyButtonDefault
+            type="submit"
+            disabled={isSubmitting || !email}
+            className={`${coWorkerInviteStyles.submitButton} ${
+              isSubmitting || !email ? coWorkerInviteStyles.submitButtonDisabled : ""
             }`}
           >
-            {copied ? (
-              <>
-                <Icon
-                  name="check"
-                  className={coWorkerInviteStyles.copyIcon}
-                />
-                Copied!
-              </>
-            ) : (
-              <>
-                <Icon
-                  name="copy"
-                  className={coWorkerInviteStyles.copyIcon}
-                />
-                Copy
-              </>
-            )}
+            {isSubmitting ? "Sending..." : "Send Invitation"}
           </button>
-        </div>
+
+          {success && (
+            <div className={coWorkerInviteStyles.successMessage}>
+              {success}
+            </div>
+          )}
+
+          {error && (
+            <div className={coWorkerInviteStyles.errorMessage}>
+              {error}
+            </div>
+          )}
+        </form>
 
         <div className={coWorkerInviteStyles.infoBox}>
           <div className={coWorkerInviteStyles.infoContent}>
@@ -91,8 +112,8 @@ export default function InviteSection({ isOpen, onClose }: InviteSectionProps) {
             </div>
             <div className={coWorkerInviteStyles.infoText}>
               <p>
-                Your co-worker will be able to join your team and you&apos;ll be
-                able to see their reports and collaborate.
+                If the user already has an account, they will be added to your team immediately. 
+                If not, they will receive an invitation email to join.
               </p>
             </div>
           </div>

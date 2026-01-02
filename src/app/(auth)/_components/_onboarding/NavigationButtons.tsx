@@ -21,6 +21,29 @@ export default function NavigationButtons({
 }: NavigationButtonsProps) {
   const { navigation } = onboardingStyles;
   
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!isStepValid) {
+      return;
+    }
+    
+    if (isSubmitting) {
+      return;
+    }
+    
+    if (!onSubmit) {
+      return;
+    }
+    
+    try {
+      await onSubmit();
+    } catch {
+      // Error handling is done in the parent component
+    }
+  };
+  
   return (
     <div className={navigation.container}>
       <button
@@ -49,11 +72,12 @@ export default function NavigationButtons({
         </button>
       ) : (
         <button
-          onClick={onSubmit}
+          onClick={handleSubmit}
           disabled={!isStepValid || isSubmitting}
           className={`${navigation.button} ${navigation.buttonComplete} ${
-            isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            (!isStepValid || isSubmitting) ? 'opacity-50 cursor-not-allowed' : ''
           }`}
+          type="button"
         >
           {isSubmitting ? 'Saving...' : 'Complete Setup ✨'}
         </button>

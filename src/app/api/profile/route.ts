@@ -35,6 +35,7 @@ export async function GET() {
         lastName: user.lastName || "",
         email: user.email,
         mobile: user.mobile || "",
+        userType: user.userType || null,
       },
       { status: 200 }
     );
@@ -122,6 +123,7 @@ export async function PATCH(request: NextRequest) {
           lastName: updatedUser.lastName || "",
           email: updatedUser.email,
           mobile: updatedUser.mobile || "",
+          userType: updatedUser.userType || null,
         },
       },
       { status: 200 }

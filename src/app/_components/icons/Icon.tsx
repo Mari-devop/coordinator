@@ -1,5 +1,5 @@
 interface IconProps {
-  name: "chart-bar" | "chevron-right" | "chevron-down" | "close" | "search" | "plus" | "check" | "copy" | "info" | "edit" | "google-ads" | "google" | "lock" | "user" | "spinner" | "settings" | "users";
+  name: "chart-bar" | "chevron-right" | "chevron-down" | "close" | "search" | "plus" | "check" | "copy" | "info" | "edit" | "google-ads" | "google" | "lock" | "user" | "spinner" | "settings" | "users" | "moon" | "sun" | "eye" | "eye-off";
   className?: string;
   width?: number | string;
   height?: number | string;

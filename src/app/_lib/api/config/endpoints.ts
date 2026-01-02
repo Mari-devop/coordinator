@@ -24,5 +24,15 @@ export const API_ENDPOINTS = {
     get: () => API_ENDPOINTS.settings.base,
     update: () => API_ENDPOINTS.settings.base,
   },
+
+  invitations: {
+    base: "/api/invitations",
+    send: () => API_ENDPOINTS.invitations.base,
+  },
+
+  coWorkers: {
+    base: "/api/co-workers",
+    get: () => API_ENDPOINTS.coWorkers.base,
+  },
 } as const;
 

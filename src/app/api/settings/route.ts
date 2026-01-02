@@ -33,11 +33,13 @@ export async function GET() {
     }
 
     const userWithSettings = user as unknown as UserWithSettings;
+    const isManager = user.userType === "manager";
+    const managerModeValue = isManager ? true : false;
     
     return NextResponse.json(
       {
         emailNotifications: userWithSettings.emailNotifications ?? true,
-        managerMode: userWithSettings.managerMode ?? false,
+        managerMode: managerModeValue,
       },
       { status: 200 }
     );
@@ -77,9 +79,9 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const { emailNotifications, managerMode } = body;
+    const { emailNotifications } = body;
 
-    if (emailNotifications === undefined && managerMode === undefined) {
+    if (emailNotifications === undefined) {
       return NextResponse.json(
         { error: "At least one setting must be provided" },
         { status: 400 }
@@ -88,15 +90,10 @@ export async function PATCH(request: NextRequest) {
 
     const updateData: {
       emailNotifications?: boolean;
-      managerMode?: boolean;
     } = {};
 
     if (emailNotifications !== undefined) {
       updateData.emailNotifications = Boolean(emailNotifications);
-    }
-
-    if (managerMode !== undefined) {
-      updateData.managerMode = Boolean(managerMode);
     }
 
     const updatedUser = await prisma.user.update({
@@ -107,13 +104,15 @@ export async function PATCH(request: NextRequest) {
     });
 
     const updatedUserWithSettings = updatedUser as unknown as UserWithSettings;
+    const isManager = updatedUser.userType === "manager";
+    const managerModeValue = isManager ? true : false;
     
     return NextResponse.json(
       {
         message: "Settings updated successfully",
         settings: {
           emailNotifications: updatedUserWithSettings.emailNotifications ?? true,
-          managerMode: updatedUserWithSettings.managerMode ?? false,
+          managerMode: managerModeValue,
         },
       },
       { status: 200 }
@@ -129,4 +128,3 @@ export async function PATCH(request: NextRequest) {
     );
   }
 }
-

@@ -6,6 +6,7 @@ export interface ProfileData {
   lastName: string;
   email: string;
   mobile: string;
+  userType?: string | null;
 }
 
 export const profileApi = {

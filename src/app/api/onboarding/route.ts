@@ -8,7 +8,7 @@ import type { OnboardingUpdateInput } from "@/app/_lib/api/types/prisma";
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: "Unauthorized" },
@@ -19,16 +19,15 @@ export async function POST(request: NextRequest) {
     let body;
     try {
       body = await request.json();
-    } catch (error) {
-      console.error("Error parsing JSON:", error);
+    } catch {
       return NextResponse.json(
         { error: "Invalid JSON body" },
         { status: 400 }
       );
     }
-    
+
     const validationResult = onboardingSchema.safeParse(body);
-    
+
     if (!validationResult.success) {
       return NextResponse.json(
         {
@@ -81,18 +80,11 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error saving onboarding data:", error);
-    
+
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    const errorStack = error instanceof Error ? error.stack : undefined;
-    
-    console.error("Error details:", {
-      message: errorMessage,
-      stack: errorStack,
-    });
-    
+
     return NextResponse.json(
-      { 
+      {
         error: "Internal server error",
         message: errorMessage,
       },

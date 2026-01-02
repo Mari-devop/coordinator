@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +15,7 @@ import AuthButton from "@/app/(auth)/_components/_auth/AuthButton";
 import AuthFooter from "@/app/(auth)/_components/_auth/AuthFooter";
 import { errorStyles } from "@/app/(auth)/_styles/authStyles";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const toast = useToast();
@@ -139,6 +139,21 @@ export default function ResetPasswordPage() {
         className="mt-2"
       />
     </AuthContainer>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <AuthContainer>
+        <AuthHeader
+          title="Reset Password"
+          subtitle="Loading..."
+        />
+      </AuthContainer>
+    }>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
 

@@ -9,61 +9,35 @@ import CoWorkerDetailView from "@/app/(menu)/_components/coWorker/CoWorkerDetail
 import InviteSection from "@/app/(menu)/_components/coWorker/InviteSection";
 import { CoWorker } from "@/app/_types/coworker";
 import { coWorkerStyles } from "@/app/(menu)/_styles/coWorkerStyles";
+import { coWorkersApi } from "@/app/_lib/api/coWorkers";
 
 export default function CoWorkersPage() {
     const toast = useToast();
-    const [coWorkers] = useState<CoWorker[]>([
-        {
-            id: '1',
-            name: 'Sarah Johnson',
-            position: 'Marketing Manager',
-            email: 'sarah.johnson@company.com',
-            status: 'online',
-            lastActive: '2 minutes ago',
-            department: 'Marketing',
-            phone: '+1 (555) 123-4567',
-            joinDate: 'Jan 15, 2023'
-        },
-        {
-            id: '2',
-            name: 'Mike Chen',
-            position: 'Software Developer',
-            email: 'mike.chen@company.com',
-            status: 'away',
-            lastActive: '1 hour ago',
-            department: 'Engineering',
-            phone: '+1 (555) 234-5678',
-            joinDate: 'Mar 22, 2023'
-        },
-        {
-            id: '3',
-            name: 'Emily Rodriguez',
-            position: 'Project Manager',
-            email: 'emily.rodriguez@company.com',
-            status: 'offline',
-            lastActive: '3 hours ago',
-            department: 'Operations',
-            phone: '+1 (555) 345-6789',
-            joinDate: 'Feb 10, 2023'
-        },
-        {
-            id: '4',
-            name: 'David Kim',
-            position: 'UX Designer',
-            email: 'david.kim@company.com',
-            status: 'online',
-            lastActive: '5 minutes ago',
-            department: 'Design',
-            phone: '+1 (555) 456-7890',
-            joinDate: 'Apr 5, 2023'
-        }
-    ]);
+    const [coWorkers, setCoWorkers] = useState<CoWorker[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [filteredCoWorkers, setFilteredCoWorkers] = useState<CoWorker[]>(coWorkers);
+    const [filteredCoWorkers, setFilteredCoWorkers] = useState<CoWorker[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCoWorker, setSelectedCoWorker] = useState<CoWorker | null>(null);
     const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
     const [isInviteSectionOpen, setIsInviteSectionOpen] = useState(false);
+
+    useEffect(() => {
+        const loadCoWorkers = async () => {
+            try {
+                setIsLoading(true);
+                const response = await coWorkersApi.getCoWorkers();
+                setCoWorkers(response.coWorkers);
+            } catch (error) {
+                console.error("Error loading co-workers:", error);
+                toast.error("Failed to load co-workers");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadCoWorkers();
+    }, [toast]);
 
     useEffect(() => {
         if (!searchQuery.trim()) {
@@ -105,11 +79,31 @@ export default function CoWorkersPage() {
 
     const handleCloseInviteSection = () => {
         setIsInviteSectionOpen(false);
+        const reloadCoWorkers = async () => {
+            try {
+                const response = await coWorkersApi.getCoWorkers();
+                setCoWorkers(response.coWorkers);
+            } catch (error) {
+                console.error("Error reloading co-workers:", error);
+            }
+        };
+        reloadCoWorkers();
     };
 
     const hasSearchResults = filteredCoWorkers.length > 0 || !searchQuery;
 
     const { container, grid, emptyState } = coWorkerStyles;
+
+    if (isLoading) {
+        return (
+            <div className={container.page}>
+                <CoWorkersHeader />
+                <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accentColor)]"></div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={container.page}>

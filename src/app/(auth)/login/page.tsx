@@ -7,17 +7,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/app/_lib/validations";
 import { storage } from "@/app/_lib/storage";
 import { type LoginFormData } from "@/app/_types/auth";
-import AuthContainer from "@/app/(auth)/_components/_auth/AuthContainer";
+import RedirectIfAuthenticated from "@/app/_components/RedirectIfAuthenticated";
+import AuthTwoColumnLayout from "@/app/(auth)/_components/_auth/RegisterLayout";
+import LoginGoogleSection from "@/app/(auth)/_components/_auth/LoginGoogleSection";
 import AuthHeader from "@/app/(auth)/_components/_auth/AuthHeader";
 import AuthForm from "@/app/(auth)/_components/_auth/AuthForm";
 import AuthInput from "@/app/(auth)/_components/_auth/AuthInput";
 import AuthButton from "@/app/(auth)/_components/_auth/AuthButton";
 import AuthFooter from "@/app/(auth)/_components/_auth/AuthFooter";
 import RememberMeSection from "@/app/(auth)/_components/_auth/RememberMeSection";
-import GoogleSignInButton from "@/app/(auth)/_components/_auth/GoogleSignInButton";
-import AuthDivider from "@/app/(auth)/_components/_auth/AuthDivider";
-import RedirectIfAuthenticated from "@/app/_components/RedirectIfAuthenticated";
-import { errorStyles } from "@/app/(auth)/_styles/authStyles";
+import { errorStyles, registerFormStyles } from "@/app/(auth)/_styles/authStyles";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -90,85 +89,85 @@ export default function LoginPage() {
 
   return (
     <RedirectIfAuthenticated>
-      <AuthContainer>
-        <AuthHeader
-          title="Welcome Back"
-          subtitle="Sign in to your account to continue"
-        />
-
-        <GoogleSignInButton />
-        
-        <AuthDivider />
-
-        <AuthForm onSubmit={handleSubmit(onSubmit)}>
-          {error && (
-            <div className={errorStyles.message}>
-              {error}
-            </div>
-          )}
-
-          <div>
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <AuthInput
-                  id="email"
-                  label="Email Address"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={field.value || ""}
-                  onChange={field.onChange}
-                />
-              )}
+      <AuthTwoColumnLayout
+        leftContent={<LoginGoogleSection />}
+        rightContent={
+          <div className={registerFormStyles.container}>
+            <AuthHeader
+              title="Sign In"
             />
-            {errors.email && (
-              <p className={errorStyles.field}>{errors.email.message}</p>
-            )}
-          </div>
 
-          <div>
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <AuthInput
-                  id="password"
-                  label="Password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={field.value || ""}
-                  onChange={field.onChange}
-                />
+            <AuthForm onSubmit={handleSubmit(onSubmit)}>
+              {error && (
+                <div className={errorStyles.message}>
+                  {error}
+                </div>
               )}
-            />
-            {errors.password && (
-              <p className={errorStyles.field}>{errors.password.message}</p>
-            )}
-          </div>
 
-          <Controller
-            name="rememberMe"
-            control={control}
-            render={({ field }) => (
-              <RememberMeSection
-                checked={field.value || false}
-                onCheckedChange={field.onChange}
+              <div>
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <AuthInput
+                      id="email"
+                      label="Email Address"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={field.value || ""}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                {errors.email && (
+                  <p className={errorStyles.field}>{errors.email.message}</p>
+                )}
+              </div>
+
+              <div>
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <AuthInput
+                      id="password"
+                      label="Password"
+                      type="password"
+                      placeholder="Enter your password"
+                      value={field.value || ""}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                {errors.password && (
+                  <p className={errorStyles.field}>{errors.password.message}</p>
+                )}
+              </div>
+
+              <Controller
+                name="rememberMe"
+                control={control}
+                render={({ field }) => (
+                  <RememberMeSection
+                    checked={field.value || false}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
               />
-            )}
-          />
 
-          <AuthButton type="submit" disabled={isLoading}>
-            {isLoading ? "Signing In..." : "Sign In"}
-          </AuthButton>
-        </AuthForm>
+              <AuthButton type="submit" disabled={isLoading}>
+                {isLoading ? "Signing In..." : "Sign In"}
+              </AuthButton>
+            </AuthForm>
 
-        <AuthFooter
-          text="Don't have an account?"
-          linkText="Sign up"
-          linkHref="/register"
-        />
-      </AuthContainer>
+            <AuthFooter
+              text="Don't have an account?"
+              linkText="Sign up"
+              linkHref="/register"
+            />
+          </div>
+        }
+      />
     </RedirectIfAuthenticated>
   );
 }
